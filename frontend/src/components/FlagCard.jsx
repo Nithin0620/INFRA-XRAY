@@ -104,15 +104,17 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
               <>
                 <button
                   onClick={() => onFeedback(flag.flag_id, "confirmed")}
-                  className="text-[10px] px-2 py-1 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"
+                  className="text-[10px] px-2 py-1 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  aria-label="Confirm flag"
                 >
                   Confirm
                 </button>
                 <button
                   onClick={() => onFeedback(flag.flag_id, "false_positive")}
-                  className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                  className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  aria-label="Mark flag as false positive"
                 >
-                  False +++
+                  False Positive
                 </button>
               </>
             )}
