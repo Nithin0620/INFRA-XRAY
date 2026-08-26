@@ -1,0 +1,11 @@
+{
+  "name": "infra-xray-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate": "node generate_synthetic_data.js"
+  },
+  "dependencies": {
+    "pdfkit": "^0.15.0"
+  }
+}

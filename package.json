@@ -1,0 +1,13 @@
+{
+  "name": "infra-xray",
+  "version": "1.0.0",
+  "private": true,
+  "description": "INFRA-XRAY — AI-Powered Infrastructure Evidence Verification Platform",
+  "scripts": {
+    "generate-data": "cd scripts && node generate_synthetic_data.js",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "setup": "cd backend && npm install && cd ../frontend && npm install"
+  }
+}

@@ -1,0 +1,276 @@
+[
+  {
+    "project_id": "proj_001",
+    "project_name": "Widening of NH-48 (Jaipur–Jodhpur Section)",
+    "state": "Rajasthan",
+    "category": "road",
+    "sanctioned_amount_inr": 850000000,
+    "sanctioned_quantity": 10,
+    "unit": "km",
+    "contractor_name": "Rajasthan Infracon Ltd.",
+    "tender_id": "RJ/NG/2024/0412",
+    "gps_boundary": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          26.9124,
+          75.7873
+        ],
+        [
+          26.92,
+          75.81
+        ],
+        [
+          26.935,
+          75.85
+        ],
+        [
+          26.95,
+          75.89
+        ],
+        [
+          26.965,
+          75.93
+        ]
+      ]
+    },
+    "start_date": "2024-03-15",
+    "deadline": "2025-09-30",
+    "documents": {
+      "contract": "raw_docs/proj_001/Contract.pdf",
+      "boq": "raw_docs/proj_001/BOQ.pdf",
+      "progress_report": "raw_docs/proj_001/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_001/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_001/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_001/",
+    "photo_count": 4
+  },
+  {
+    "project_id": "proj_002",
+    "project_name": "Rural Road Connecting Aurangabad to Gaya (PMGSY)",
+    "state": "Bihar",
+    "category": "road",
+    "sanctioned_amount_inr": 250000000,
+    "sanctioned_quantity": 10,
+    "unit": "km",
+    "contractor_name": "Bharat Road Builders Pvt. Ltd.",
+    "tender_id": "BR/RD/2024/1187",
+    "gps_boundary": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          24.75,
+          84.99
+        ],
+        [
+          24.76,
+          85.01
+        ],
+        [
+          24.77,
+          85.03
+        ],
+        [
+          24.78,
+          85.05
+        ],
+        [
+          24.79,
+          85.07
+        ]
+      ]
+    },
+    "start_date": "2024-01-10",
+    "deadline": "2025-06-30",
+    "documents": {
+      "contract": "raw_docs/proj_002/Contract.pdf",
+      "boq": "raw_docs/proj_002/BOQ.pdf",
+      "progress_report": "raw_docs/proj_002/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_002/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_002/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_002/",
+    "photo_count": 4
+  },
+  {
+    "project_id": "proj_003",
+    "project_name": "Construction of Government Higher Secondary School Building",
+    "state": "Madhya Pradesh",
+    "category": "building",
+    "sanctioned_amount_inr": 42000000,
+    "sanctioned_quantity": 4500,
+    "unit": "sqft",
+    "contractor_name": "MP Construction Corp",
+    "tender_id": "MP/EDU/2024/0293",
+    "gps_boundary": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          23.2599,
+          77.4126
+        ],
+        [
+          23.26,
+          77.4128
+        ],
+        [
+          23.2602,
+          77.4128
+        ],
+        [
+          23.2602,
+          77.4126
+        ],
+        [
+          23.2599,
+          77.4126
+        ]
+      ]
+    },
+    "start_date": "2024-06-01",
+    "deadline": "2025-12-31",
+    "documents": {
+      "contract": "raw_docs/proj_003/Contract.pdf",
+      "boq": "raw_docs/proj_003/BOQ.pdf",
+      "progress_report": "raw_docs/proj_003/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_003/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_003/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_003/",
+    "photo_count": 3
+  },
+  {
+    "project_id": "proj_004",
+    "project_name": "Bridge Construction over Mahanadi River",
+    "state": "Odisha",
+    "category": "bridge",
+    "sanctioned_amount_inr": 620000000,
+    "sanctioned_quantity": 480,
+    "unit": "m",
+    "contractor_name": "Eastern Bridges Ltd.",
+    "tender_id": "OD/PWD/2024/0576",
+    "gps_boundary": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          20.2961,
+          85.8245
+        ],
+        [
+          20.2965,
+          85.825
+        ],
+        [
+          20.297,
+          85.8255
+        ]
+      ]
+    },
+    "start_date": "2024-02-20",
+    "deadline": "2026-02-20",
+    "documents": {
+      "contract": "raw_docs/proj_004/Contract.pdf",
+      "boq": "raw_docs/proj_004/BOQ.pdf",
+      "progress_report": "raw_docs/proj_004/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_004/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_004/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_004/",
+    "photo_count": 3
+  },
+  {
+    "project_id": "proj_005",
+    "project_name": "Water Pipeline from Treatment Plant to Distribution Network",
+    "state": "Uttar Pradesh",
+    "category": "pipeline",
+    "sanctioned_amount_inr": 180000000,
+    "sanctioned_quantity": 25,
+    "unit": "km",
+    "contractor_name": "UP Jal Nigam Contractors",
+    "tender_id": "UP/JN/2024/0834",
+    "gps_boundary": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          26.8467,
+          80.9462
+        ],
+        [
+          26.85,
+          80.95
+        ],
+        [
+          26.855,
+          80.96
+        ],
+        [
+          26.86,
+          80.975
+        ],
+        [
+          26.865,
+          80.99
+        ]
+      ]
+    },
+    "start_date": "2024-04-01",
+    "deadline": "2025-10-31",
+    "documents": {
+      "contract": "raw_docs/proj_005/Contract.pdf",
+      "boq": "raw_docs/proj_005/BOQ.pdf",
+      "progress_report": "raw_docs/proj_005/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_005/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_005/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_005/",
+    "photo_count": 4
+  },
+  {
+    "project_id": "proj_006",
+    "project_name": "Government Office Building — Sector 17, Chandigarh",
+    "state": "Punjab",
+    "category": "building",
+    "sanctioned_amount_inr": 95000000,
+    "sanctioned_quantity": 8000,
+    "unit": "sqft",
+    "contractor_name": "Chandigarh Buildtech Pvt. Ltd.",
+    "tender_id": "PB/GOV/2024/0102",
+    "gps_boundary": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          30.7333,
+          76.7794
+        ],
+        [
+          30.7335,
+          76.7796
+        ],
+        [
+          30.7337,
+          76.7796
+        ],
+        [
+          30.7337,
+          76.7794
+        ],
+        [
+          30.7333,
+          76.7794
+        ]
+      ]
+    },
+    "start_date": "2024-05-15",
+    "deadline": "2025-11-15",
+    "documents": {
+      "contract": "raw_docs/proj_006/Contract.pdf",
+      "boq": "raw_docs/proj_006/BOQ.pdf",
+      "progress_report": "raw_docs/proj_006/ProgressReport.pdf",
+      "invoice": "raw_docs/proj_006/Invoice.pdf",
+      "inspection_report": "raw_docs/proj_006/InspectionReport.pdf"
+    },
+    "photo_folder": "raw_photos/proj_006/",
+    "photo_count": 4
+  }
+]

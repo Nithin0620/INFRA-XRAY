@@ -1,0 +1,90 @@
+[
+  {
+    "project_id": "proj_001",
+    "intended_mismatch_type": "none",
+    "quantity_deviation_pct": 2,
+    "cost_deviation_pct": 0,
+    "days_between_report_and_invoice": 0,
+    "route_deviation_m": 0,
+    "intended_cv_tags": [
+      "clean_surface",
+      "clean_surface",
+      "clean_surface",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0
+  },
+  {
+    "project_id": "proj_002",
+    "intended_mismatch_type": "major_quantity_mismatch",
+    "quantity_deviation_pct": 22,
+    "cost_deviation_pct": 0,
+    "days_between_report_and_invoice": 0,
+    "route_deviation_m": 0,
+    "intended_cv_tags": [
+      "clean_surface",
+      "pothole",
+      "cracking",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0.5
+  },
+  {
+    "project_id": "proj_003",
+    "intended_mismatch_type": "cost_overbilling",
+    "quantity_deviation_pct": 0,
+    "cost_deviation_pct": 18,
+    "days_between_report_and_invoice": 0,
+    "route_deviation_m": 0,
+    "intended_cv_tags": [
+      "clean_surface",
+      "clean_surface",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0
+  },
+  {
+    "project_id": "proj_004",
+    "intended_mismatch_type": "date_inconsistency",
+    "quantity_deviation_pct": 0,
+    "cost_deviation_pct": 0,
+    "days_between_report_and_invoice": -26,
+    "route_deviation_m": 0,
+    "intended_cv_tags": [
+      "clean_surface",
+      "cracking",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0.3333333333333333
+  },
+  {
+    "project_id": "proj_005",
+    "intended_mismatch_type": "moderate_mismatch_with_route_deviation",
+    "quantity_deviation_pct": 7.5,
+    "cost_deviation_pct": 0,
+    "days_between_report_and_invoice": 0,
+    "route_deviation_m": 400,
+    "intended_cv_tags": [
+      "clean_surface",
+      "clean_surface",
+      "pothole",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0.25
+  },
+  {
+    "project_id": "proj_006",
+    "intended_mismatch_type": "none",
+    "quantity_deviation_pct": 2,
+    "cost_deviation_pct": 0,
+    "days_between_report_and_invoice": 0,
+    "route_deviation_m": 0,
+    "intended_cv_tags": [
+      "clean_surface",
+      "clean_surface",
+      "clean_surface",
+      "clean_surface"
+    ],
+    "cv_anomaly_ratio": 0
+  }
+]
