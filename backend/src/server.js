@@ -8,6 +8,7 @@ const evidenceRoutes = require("./routes/evidence.routes");
 const flagRoutes = require("./routes/flag.routes");
 const copilotRoutes = require("./routes/copilot.routes");
 const feedbackRoutes = require("./routes/feedback.routes");
+const qualityRoutes = require("./routes/quality.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -26,6 +27,7 @@ app.use("/api/evidence", evidenceRoutes);
 app.use("/api/flags", flagRoutes);
 app.use("/api/copilot", copilotRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/quality", qualityRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

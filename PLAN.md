@@ -14,8 +14,8 @@ React (Vite + Tailwind)  →  Express API  →  Data files (JSON)
 | Phase | Name | Status | Notes |
 |-------|------|--------|-------|
 | 1 | Foundation + Scaffold + Synthetic Data | ✅ DONE | Express API, React UI, data generator |
-| 2 | Data Quality Checker | ⬜ TODO | Python worker for ingestion validation |
-| 3 | Document Extraction Pipeline | ⬜ TODO | pdfplumber + Anthropic LLM extraction |
+| 2 | Data Quality Checker | ✅ DONE | Python: pdfplumber + Pillow validation, quality_report.json, /api/quality |
+| 3 | Document Extraction Pipeline | ✅ DONE | pdfplumber + regex fallback + Anthropic LLM, Evidence Records |
 | 4 | Cross-Verification Engine | ⬜ TODO | Rule-based flag checks (parallel with 5,6) |
 | 5 | Computer Vision Module | ⬜ TODO | Heuristic damage detection placeholder (parallel) |
 | 6 | Geospatial Verification | ⬜ TODO | GPS route/boundary checks (parallel) |
@@ -37,6 +37,13 @@ React (Vite + Tailwind)  →  Express API  →  Data files (JSON)
 # Generate synthetic data
 cd scripts && npm install && node generate_synthetic_data.js
 
+# Run quality check (Python)
+cd python-worker && python -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python run_quality_check.py
+
+# Run document extraction (Python)
+cd python-worker && .venv/bin/python run_extraction.py
+
 # Backend
 cd backend && npm install && npm run dev
 
@@ -53,6 +60,15 @@ INFRA-XRAY/
 ├── shared/            JSON schemas (contract)
 ├── scripts/           Data generation scripts
 ├── python-worker/     AI/ML/Geo processing (Phase 2+)
+│   ├── quality_checker.py    File validation module
+│   ├── run_quality_check.py  Orchestrator → quality_report.json
+│   ├── pdf_reader.py         PDF text extraction (pdfplumber)
+│   ├── llm_extractor.py      Anthropic LLM + regex fallback parser
+│   ├── photo_metadata.py     Photo sidecar reader
+│   ├── evidence_model.py     Evidence Record generator
+│   ├── run_extraction.py     Orchestrator → data/extracted/{id}.json
+│   ├── requirements.txt      pdfplumber, Pillow, anthropic
+│   └── .venv/                Python virtual environment
 ├── data/              Generated data (raw_docs, raw_photos, extracted, verified, feedback)
 ├── PLAN.md            This file
 └── .env               Secrets (not committed)
@@ -71,6 +87,8 @@ INFRA-XRAY/
 | POST | /api/copilot/:projectId/checklist | Generate inspection checklist |
 | POST | /api/feedback/:projectId | Submit flag feedback |
 | GET | /api/feedback/:projectId | Get feedback for a project |
+| GET | /api/quality | Full quality report (all projects) |
+| GET | /api/quality/:projectId | Quality result for one project |
 
 ## The 6 Projects
 
