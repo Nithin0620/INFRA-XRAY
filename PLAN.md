@@ -16,10 +16,10 @@ React (Vite + Tailwind)  →  Express API  →  Data files (JSON)
 | 1 | Foundation + Scaffold + Synthetic Data | ✅ DONE | Express API, React UI, data generator |
 | 2 | Data Quality Checker | ✅ DONE | Python: pdfplumber + Pillow validation, quality_report.json, /api/quality |
 | 3 | Document Extraction Pipeline | ✅ DONE | pdfplumber + regex fallback + Anthropic LLM, Evidence Records |
-| 4 | Cross-Verification Engine | ⬜ TODO | Rule-based flag checks (parallel with 5,6) |
-| 5 | Computer Vision Module | ⬜ TODO | Heuristic damage detection placeholder (parallel) |
-| 6 | Geospatial Verification | ⬜ TODO | GPS route/boundary checks (parallel) |
-| 7 | Anomaly Engine + Risk Scoring | ⬜ TODO | IsolationForest + unified scoring |
+| 4 | Cross-Verification Engine | ✅ DONE | Rule-based: quantity, cost, date, evidence, BOQ checks |
+| 5 | Computer Vision Module | ✅ DONE | Heuristic damage classifier (OpenCV + Pillow fallback) |
+| 6 | Geospatial Verification | ✅ DONE | GPS boundary/route checks |
+| 7 | Anomaly Engine + Risk Scoring | ✅ DONE | Flag merge + weighted scoring 0-100 |
 | 8 | React UI Polish + Leaflet + React Flow | ⬜ TODO | Full interactive maps, evidence graph, animations |
 | 9 | AI Copilot + Feedback + Demo Polish | ⬜ TODO | Anthropic copilot, feedback loop, final UI |
 
@@ -44,6 +44,12 @@ cd python-worker && python -m venv .venv && .venv/bin/pip install -r requirement
 # Run document extraction (Python)
 cd python-worker && .venv/bin/python run_extraction.py
 
+# Run verification pipeline (Phases 4-7)
+cd python-worker && .venv/bin/python verification/run_verification.py
+.venv/bin/python vision/run_vision_check.py
+.venv/bin/python geospatial/run_geo_check.py
+.venv/bin/python anomaly/run_anomaly_engine.py
+
 # Backend
 cd backend && npm install && npm run dev
 
@@ -67,6 +73,18 @@ INFRA-XRAY/
 │   ├── photo_metadata.py     Photo sidecar reader
 │   ├── evidence_model.py     Evidence Record generator
 │   ├── run_extraction.py     Orchestrator → data/extracted/{id}.json
+│   ├── verification/
+│   │   ├── rules.py              Cross-verification rule engine
+│   │   └── run_verification.py   → data/verified/{id}_cross_flags.json
+│   ├── vision/
+│   │   ├── damage_detector.py    Heuristic CV damage classifier
+│   │   └── run_vision_check.py   → data/verified/{id}_vision_flags.json
+│   ├── geospatial/
+│   │   ├── geo_checks.py         GPS boundary/route checks
+│   │   └── run_geo_check.py      → data/verified/{id}_geo_flags.json
+│   ├── anomaly/
+│   │   ├── engine.py             Flag merge + risk scoring
+│   │   └── run_anomaly_engine.py → data/verified/{id}_report.json + summary.json
 │   ├── requirements.txt      pdfplumber, Pillow, anthropic
 │   └── .venv/                Python virtual environment
 ├── data/              Generated data (raw_docs, raw_photos, extracted, verified, feedback)

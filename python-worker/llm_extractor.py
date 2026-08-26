@@ -156,13 +156,15 @@ def extract_boq(text: str) -> dict:
 
 def extract_progress_report(text: str) -> dict:
     qty_str = _extract_line(text, r"Claimed Quantity Completed:\s*([\d.]+)") or "0"
+    # Use reporting_period as the date reference (synthetic PDFs don't have separate report_date)
+    period = _extract_line(text, r"Reporting Period:\s*(.+)") or ""
     return {
-        "reporting_period": _extract_line(text, r"Reporting Period:\s*(.+)") or "",
+        "reporting_period": period,
         "quantity_completed": float(qty_str),
         "unit": _extract_line(text, r"Claimed Quantity Completed:\s*[\d.]+\s*(\w+)") or "km",
         "percent_complete": float(_extract_line(text, r"Percentage Complete:\s*([\d.]+)") or "0"),
         "engineer_name": _extract_line(text, r"Engineer-in-Charge:\s*(.+)") or "",
-        "report_date": _extract_line(text, r"Date:\s*(.+)") or "",
+        "report_date": period,  # Use period as date for comparison
     }
 
 
