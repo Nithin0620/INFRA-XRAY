@@ -233,7 +233,9 @@ export default function Dashboard() {
                   <td className="px-5 py-4">
                     <Link
                       to={`/project/${p.project_id}`}
-                      className="text-gray-500 hover:text-brand-400 transition-colors"
+                      className="text-gray-500 hover:text-brand-400 transition-colors focus-visible:ring-2 focus-visible:outline-none rounded"
+                      aria-label={`View details for ${p.project_name}`}
+                      title={`View details for ${p.project_name}`}
                     >
                       <ArrowRight className="w-4 h-4" />
                     </Link>

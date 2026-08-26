@@ -35,6 +35,8 @@ export default function Layout() {
                 key={to}
                 to={to}
                 end={to === "/"}
+                aria-label={label}
+                title={label}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
