@@ -8,6 +8,6 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "setup": "cd backend && npm install && cd ../frontend && npm install"
+    "setup": "cd backend && pnpm install && cd ../frontend && pnpm install"
   }
 }
