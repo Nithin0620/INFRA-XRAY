@@ -246,6 +246,7 @@ export default function UploadPage() {
             <button
               onClick={() => setError(null)}
               className="ml-auto text-red-400 hover:text-red-300"
+              aria-label="Dismiss error"
             >
               <X className="w-4 h-4" />
             </button>
@@ -428,6 +429,7 @@ export default function UploadPage() {
                     <button
                       onClick={() => removeFile(index)}
                       className="text-gray-500 hover:text-red-400 transition-colors"
+                      aria-label="Remove file"
                     >
                       <X className="w-4 h-4" />
                     </button>
