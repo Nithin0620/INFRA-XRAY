@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import MapView from "./pages/MapView";
 import About from "./pages/About";
+import Upload from "./pages/Upload";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="project/:id" element={<ProjectDetail />} />
         <Route path="map" element={<MapView />} />
         <Route path="about" element={<About />} />
+        <Route path="upload" element={<Upload />} />
       </Route>
     </Routes>
   );

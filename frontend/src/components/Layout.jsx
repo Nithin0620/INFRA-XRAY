@@ -1,8 +1,9 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, Map, Info, Search } from "lucide-react";
+import { LayoutDashboard, Map, Info, Search, Upload } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/upload", label: "Upload", icon: Upload },
   { to: "/map", label: "Map View", icon: Map },
   { to: "/about", label: "About", icon: Info },
 ];
