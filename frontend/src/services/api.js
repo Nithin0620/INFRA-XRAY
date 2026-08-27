@@ -1,12 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: '/api',
   timeout: 10000,
 });
 
 // Projects
-export const fetchProjects = () => api.get("/projects").then((r) => r.data);
+export const fetchProjects = () => api.get('/projects').then((r) => r.data);
 export const fetchProject = (id) => api.get(`/projects/${id}`).then((r) => r.data);
 export const fetchProjectMap = (id) => api.get(`/projects/${id}/map`).then((r) => r.data);
 
@@ -15,7 +15,7 @@ export const fetchEvidence = (projectId) => api.get(`/evidence/${projectId}`).th
 
 // Flags
 export const fetchFlags = (projectId) => api.get(`/flags/${projectId}`).then((r) => r.data);
-export const fetchAllFlags = () => api.get("/flags").then((r) => r.data);
+export const fetchAllFlags = () => api.get('/flags').then((r) => r.data);
 
 // Copilot
 export const generateChecklist = (projectId) =>
@@ -24,7 +24,6 @@ export const generateChecklist = (projectId) =>
 // Feedback
 export const submitFeedback = (projectId, data) =>
   api.post(`/feedback/${projectId}`, data).then((r) => r.data);
-export const fetchFeedback = (projectId) =>
-  api.get(`/feedback/${projectId}`).then((r) => r.data);
+export const fetchFeedback = (projectId) => api.get(`/feedback/${projectId}`).then((r) => r.data);
 
 export default api;
