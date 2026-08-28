@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 import {
   Database,
   Search,
@@ -11,91 +11,91 @@ import {
   ArrowRight,
   Brain,
   Shield,
-} from "lucide-react";
+} from 'lucide-react';
 
 const stages = [
   {
     icon: Database,
-    label: "Data Ingestion",
-    description: "PDF documents + site photos collected",
-    type: "input",
+    label: 'Data Ingestion',
+    description: 'PDF documents + site photos collected',
+    type: 'input',
   },
   {
     icon: Search,
-    label: "Document Intelligence",
-    description: "OCR + LLM extraction into structured JSON",
-    type: "ai",
+    label: 'Document Intelligence',
+    description: 'OCR + LLM extraction into structured JSON',
+    type: 'ai',
   },
   {
     icon: Shield,
-    label: "Evidence Model",
-    description: "Normalized claims, sources, and evidence records",
-    type: "core",
+    label: 'Evidence Model',
+    description: 'Normalized claims, sources, and evidence records',
+    type: 'core',
   },
   {
     icon: BarChart3,
-    label: "Cross-Verification",
-    description: "Rule-based document consistency checks",
-    type: "rule",
+    label: 'Cross-Verification',
+    description: 'Rule-based document consistency checks',
+    type: 'rule',
   },
   {
     icon: Eye,
-    label: "Computer Vision",
-    description: "Road/structure damage detection (CNN placeholder)",
-    type: "cv",
+    label: 'Computer Vision',
+    description: 'Road/structure damage detection (CNN placeholder)',
+    type: 'cv',
   },
   {
     icon: MapPin,
-    label: "Geospatial",
-    description: "GPS route/boundary alignment verification",
-    type: "geo",
+    label: 'Geospatial',
+    description: 'GPS route/boundary alignment verification',
+    type: 'geo',
   },
   {
     icon: Brain,
-    label: "Anomaly Engine",
-    description: "IsolationForest + z-score statistical outlier detection",
-    type: "ml",
+    label: 'Anomaly Engine',
+    description: 'IsolationForest + z-score statistical outlier detection',
+    type: 'ml',
   },
   {
     icon: AlertTriangle,
-    label: "Risk Scoring",
-    description: "Unified 0-100 score with evidence-backed alerts",
-    type: "core",
+    label: 'Risk Scoring',
+    description: 'Unified 0-100 score with evidence-backed alerts',
+    type: 'core',
   },
   {
     icon: Bot,
-    label: "Inspector Copilot",
-    description: "AI-generated field inspection checklists",
-    type: "ai",
+    label: 'Inspector Copilot',
+    description: 'AI-generated field inspection checklists',
+    type: 'ai',
   },
   {
     icon: RefreshCw,
-    label: "Feedback Loop",
-    description: "Inspector validates flags → system learns",
-    type: "human",
+    label: 'Feedback Loop',
+    description: 'Inspector validates flags → system learns',
+    type: 'human',
   },
 ];
 
 const typeColors = {
-  input: "from-gray-500/20 to-gray-600/5 border-gray-500/20",
-  ai: "from-purple-500/20 to-purple-600/5 border-purple-500/20",
-  core: "from-brand-500/20 to-brand-600/5 border-brand-500/20",
-  rule: "from-cyan-500/20 to-cyan-600/5 border-cyan-500/20",
-  cv: "from-pink-500/20 to-pink-600/5 border-pink-500/20",
-  geo: "from-green-500/20 to-green-600/5 border-green-500/20",
-  ml: "from-orange-500/20 to-orange-600/5 border-orange-500/20",
-  human: "from-yellow-500/20 to-yellow-600/5 border-yellow-500/20",
+  input: 'from-gray-500/20 to-gray-600/5 border-gray-500/20',
+  ai: 'from-purple-500/20 to-purple-600/5 border-purple-500/20',
+  core: 'from-brand-500/20 to-brand-600/5 border-brand-500/20',
+  rule: 'from-cyan-500/20 to-cyan-600/5 border-cyan-500/20',
+  cv: 'from-pink-500/20 to-pink-600/5 border-pink-500/20',
+  geo: 'from-green-500/20 to-green-600/5 border-green-500/20',
+  ml: 'from-orange-500/20 to-orange-600/5 border-orange-500/20',
+  human: 'from-yellow-500/20 to-yellow-600/5 border-yellow-500/20',
 };
 
 const typeLabels = {
-  input: "Input",
-  ai: "LLM-Powered",
-  core: "Core",
-  rule: "Deterministic Rules",
-  cv: "Computer Vision",
-  geo: "Geospatial",
-  ml: "Machine Learning",
-  human: "Human-in-the-Loop",
+  input: 'Input',
+  ai: 'LLM-Powered',
+  core: 'Core',
+  rule: 'Deterministic Rules',
+  cv: 'Computer Vision',
+  geo: 'Geospatial',
+  ml: 'Machine Learning',
+  human: 'Human-in-the-Loop',
 };
 
 export default function About() {
@@ -106,8 +106,8 @@ export default function About() {
           How <span className="text-brand-400">INFRA-XRAY</span> Works
         </h1>
         <p className="text-gray-500 mt-2">
-          An end-to-end AI-powered pipeline for verifying government infrastructure projects.
-          Every alert traces back to specific evidence.
+          An end-to-end AI-powered pipeline for verifying government infrastructure projects. Every
+          alert traces back to specific evidence.
         </p>
       </motion.div>
 

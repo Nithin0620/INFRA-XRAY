@@ -1,15 +1,9 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import {
-  AlertTriangle,
-  TrendingUp,
-  IndianRupee,
-  FolderOpen,
-  ArrowRight,
-} from "lucide-react";
-import { fetchProjects } from "../services/api";
-import { formatINR, severityColor, categoryIcon } from "../lib/utils";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { AlertTriangle, TrendingUp, IndianRupee, FolderOpen, ArrowRight } from 'lucide-react';
+import { fetchProjects } from '../services/api';
+import { formatINR, severityColor, categoryIcon } from '../lib/utils';
 
 const container = {
   hidden: { opacity: 0 },
@@ -23,8 +17,8 @@ const item = {
 export default function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortKey, setSortKey] = useState("risk_score");
-  const [sortDir, setSortDir] = useState("desc");
+  const [sortKey, setSortKey] = useState('risk_score');
+  const [sortDir, setSortDir] = useState('desc');
 
   useEffect(() => {
     fetchProjects()
@@ -36,20 +30,22 @@ export default function Dashboard() {
   const sorted = [...projects].sort((a, b) => {
     const aVal = a[sortKey] ?? -1;
     const bVal = b[sortKey] ?? -1;
-    return sortDir === "desc" ? bVal - aVal : aVal - bVal;
+    return sortDir === 'desc' ? bVal - aVal : aVal - bVal;
   });
 
   const totalValue = projects.reduce((s, p) => s + (p.sanctioned_amount_inr || 0), 0);
-  const criticalCount = projects.filter((p) => p.severity_label === "Critical" || p.severity_label === "High").length;
+  const criticalCount = projects.filter(
+    (p) => p.severity_label === 'Critical' || p.severity_label === 'High'
+  ).length;
   const avgRisk = projects.length
     ? Math.round(projects.reduce((s, p) => s + (p.risk_score || 0), 0) / projects.length)
     : 0;
 
   const handleSort = (key) => {
-    if (sortKey === key) setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+    if (sortKey === key) setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'));
     else {
       setSortKey(key);
-      setSortDir("desc");
+      setSortDir('desc');
     }
   };
 
@@ -67,11 +63,7 @@ export default function Dashboard() {
   return (
     <div className="page-container">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">
           Infrastructure <span className="text-brand-400">Verification</span> Dashboard
         </h1>
@@ -151,12 +143,12 @@ export default function Dashboard() {
             <thead>
               <tr className="border-b border-white/5 text-gray-500 text-xs uppercase tracking-wider">
                 {[
-                  { key: "project_name", label: "Project" },
-                  { key: "state", label: "State" },
-                  { key: "category", label: "Type" },
-                  { key: "sanctioned_amount_inr", label: "Value" },
-                  { key: "risk_score", label: "Risk" },
-                  { key: "severity_label", label: "Severity" },
+                  { key: 'project_name', label: 'Project' },
+                  { key: 'state', label: 'State' },
+                  { key: 'category', label: 'Type' },
+                  { key: 'sanctioned_amount_inr', label: 'Value' },
+                  { key: 'risk_score', label: 'Risk' },
+                  { key: 'severity_label', label: 'Severity' },
                 ].map(({ key, label }) => (
                   <th
                     key={key}
@@ -165,7 +157,7 @@ export default function Dashboard() {
                   >
                     {label}
                     {sortKey === key && (
-                      <span className="ml-1">{sortDir === "desc" ? "↓" : "↑"}</span>
+                      <span className="ml-1">{sortDir === 'desc' ? '↓' : '↑'}</span>
                     )}
                   </th>
                 ))}
@@ -213,22 +205,20 @@ export default function Dashboard() {
                             width: `${p.risk_score || 0}%`,
                             backgroundColor:
                               (p.risk_score || 0) >= 71
-                                ? "#dc2626"
+                                ? '#dc2626'
                                 : (p.risk_score || 0) >= 46
-                                ? "#ea580c"
-                                : (p.risk_score || 0) >= 21
-                                ? "#eab308"
-                                : "#16a34a",
+                                  ? '#ea580c'
+                                  : (p.risk_score || 0) >= 21
+                                    ? '#eab308'
+                                    : '#16a34a',
                           }}
                         />
                       </div>
-                      <span className="text-sm font-mono text-gray-400">{p.risk_score ?? "—"}</span>
+                      <span className="text-sm font-mono text-gray-400">{p.risk_score ?? '—'}</span>
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <span className={severityColor(p.severity_label)}>
-                      {p.severity_label}
-                    </span>
+                    <span className={severityColor(p.severity_label)}>{p.severity_label}</span>
                   </td>
                   <td className="px-5 py-4">
                     <Link
