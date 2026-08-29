@@ -153,13 +153,17 @@ export default function Dashboard() {
                 },
                 {
                   label: 'High Risk (46-70)',
-                  count: projects.filter((p) => (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71).length,
+                  count: projects.filter(
+                    (p) => (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71
+                  ).length,
                   color: 'bg-orange-500',
                   textColor: 'text-orange-400',
                 },
                 {
                   label: 'Moderate Risk (21-45)',
-                  count: projects.filter((p) => (p.risk_score || 0) >= 21 && (p.risk_score || 0) < 46).length,
+                  count: projects.filter(
+                    (p) => (p.risk_score || 0) >= 21 && (p.risk_score || 0) < 46
+                  ).length,
                   color: 'bg-yellow-500',
                   textColor: 'text-yellow-400',
                 },
@@ -174,7 +178,8 @@ export default function Dashboard() {
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-gray-400">{item.label}</span>
                     <span className={`font-bold font-mono ${item.textColor}`}>
-                      {item.count} ({projects.length ? Math.round((item.count / projects.length) * 100) : 0}%)
+                      {item.count} (
+                      {projects.length ? Math.round((item.count / projects.length) * 100) : 0}%)
                     </span>
                   </div>
                   <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
@@ -200,8 +205,12 @@ export default function Dashboard() {
         >
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-sm font-semibold text-gray-200">Sanctioned Value vs Risk Severity</h3>
-              <p className="text-xs text-gray-500">Comparing financial exposure against verified risk</p>
+              <h3 className="text-sm font-semibold text-gray-200">
+                Sanctioned Value vs Risk Severity
+              </h3>
+              <p className="text-xs text-gray-500">
+                Comparing financial exposure against verified risk
+              </p>
             </div>
             <span className="text-[11px] text-gray-400 bg-white/5 px-2 py-1 rounded">
               High Risk = Immediate Audit Required
@@ -212,7 +221,10 @@ export default function Dashboard() {
             <div className="h-full flex items-end gap-3 pt-6 pb-2 px-2 overflow-x-auto">
               {projects.map((p) => {
                 const maxVal = Math.max(...projects.map((x) => x.sanctioned_amount_inr || 1));
-                const heightPercent = Math.max(15, Math.round(((p.sanctioned_amount_inr || 0) / maxVal) * 100));
+                const heightPercent = Math.max(
+                  15,
+                  Math.round(((p.sanctioned_amount_inr || 0) / maxVal) * 100)
+                );
                 const isCrit = (p.risk_score || 0) >= 71;
                 const isHigh = (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71;
 

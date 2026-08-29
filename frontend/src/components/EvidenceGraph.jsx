@@ -1,12 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
-import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
-  Handle,
-  Position,
-  MarkerType,
-} from 'reactflow';
+import { useMemo } from 'react';
+import ReactFlow, { Background, Controls, MiniMap, Handle, Position, MarkerType } from 'reactflow';
 import dagre from '@dagrejs/dagre';
 import {
   FileText,
@@ -17,7 +10,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   AlertCircle,
-  ExternalLink,
 } from 'lucide-react';
 import { formatINR } from '../lib/utils';
 
@@ -79,7 +71,9 @@ const DocumentNode = ({ data }) => {
             <Icon className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-xs font-bold text-gray-200 truncate max-w-[130px]">{data.label}</div>
+            <div className="text-xs font-bold text-gray-200 truncate max-w-[130px]">
+              {data.label}
+            </div>
             <div className="text-[10px] text-gray-500 font-mono truncate">{data.sourceFile}</div>
           </div>
         </div>
@@ -116,7 +110,9 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
 
     const redFlags = flags.filter((f) => f.severity === 'red');
     const hasQuantityMismatch = flags.some((f) => f.category === 'quantity_mismatch');
-    const hasCostMismatch = flags.some((f) => f.category === 'cost_overrun' || f.category === 'unit_rate_inflation');
+    const hasCostMismatch = flags.some(
+      (f) => f.category === 'cost_overrun' || f.category === 'unit_rate_inflation'
+    );
     const hasGeoMismatch = flags.some((f) => f.source_module === 'geospatial');
     const hasVisionDamage = flags.some((f) => f.source_module === 'computer_vision');
 
@@ -271,7 +267,10 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
           sourceFile: `${extracted.photos.length} Captured Images`,
           icon: Camera,
           value: `${extracted.photos.length} Geotagged Photos`,
-          subtext: damagedPhotos.length > 0 ? `${damagedPhotos.length} Defect captures` : 'Surfaces verified',
+          subtext:
+            damagedPhotos.length > 0
+              ? `${damagedPhotos.length} Defect captures`
+              : 'Surfaces verified',
           hasFlag: hasVisionDamage,
         },
       });

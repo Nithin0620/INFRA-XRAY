@@ -107,7 +107,8 @@ Respond with strict JSON adhering to this schema:
 
   flags.forEach((f) => {
     const isRed = f.severity === 'red';
-    const ref = f.documents_involved?.join(', ') || f.photos_involved?.join(', ') || 'Project Specs';
+    const ref =
+      f.documents_involved?.join(', ') || f.photos_involved?.join(', ') || 'Project Specs';
 
     if (f.category === 'quantity_mismatch') {
       checklist.push({

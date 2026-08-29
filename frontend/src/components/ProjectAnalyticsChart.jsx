@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   BarChart,
   Bar,
@@ -8,7 +7,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
-  Legend,
 } from 'recharts';
 import { formatINR } from '../lib/utils';
 
@@ -93,7 +91,9 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-gray-200">Quantity Verification Funnel</h3>
-            <p className="text-xs text-gray-500">Contracted vs Progress Claimed vs Physical Ground Audit</p>
+            <p className="text-xs text-gray-500">
+              Contracted vs Progress Claimed vs Physical Ground Audit
+            </p>
           </div>
           <span className="text-xs font-mono bg-white/5 px-2.5 py-1 rounded text-gray-300">
             Unit: {unit}
@@ -123,7 +123,9 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
             <h3 className="text-sm font-semibold text-gray-200">Financial Audit Breakdown</h3>
             <p className="text-xs text-gray-500">Sanctioned Amount vs BOQ vs Total Billed</p>
           </div>
-          <span className="text-xs font-mono bg-white/5 px-2.5 py-1 rounded text-gray-300">INR (₹)</span>
+          <span className="text-xs font-mono bg-white/5 px-2.5 py-1 rounded text-gray-300">
+            INR (₹)
+          </span>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
