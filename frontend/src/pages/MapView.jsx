@@ -1,21 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  MapPin,
-  ArrowRight,
-  Filter,
-  Search,
-  Layers,
-  AlertTriangle,
-  Camera,
-  Compass,
-} from 'lucide-react';
+import { ArrowRight, Search, Layers, Compass } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
-import L from 'leaflet';
 import { fetchProjects } from '../services/api';
 import { formatINR, categoryIcon, riskScoreColor, severityColor } from '../lib/utils';
-import { createProjectIcon, createPhotoIcon } from '../components/ProjectMap';
+import { createProjectIcon } from '../components/ProjectMap';
 
 function MapController({ center, bounds, zoom }) {
   const map = useMap();
@@ -161,8 +151,9 @@ export default function MapView() {
 
         <div className="text-xs text-gray-500 flex items-center gap-1.5">
           <Layers className="w-4 h-4 text-brand-400" />
-          Showing <span className="text-gray-300 font-semibold">{filteredProjects.length}</span> of{' '}
-          {projects.length} projects
+          Showing <span className="text-gray-300 font-semibold">
+            {filteredProjects.length}
+          </span> of {projects.length} projects
         </div>
       </motion.div>
 
@@ -307,9 +298,7 @@ export default function MapView() {
             <h2 className="section-title text-base">
               <Compass className="w-4 h-4 text-brand-400" /> Monitored Projects
             </h2>
-            <span className="text-xs text-gray-500 font-mono">
-              {filteredProjects.length} sites
-            </span>
+            <span className="text-xs text-gray-500 font-mono">{filteredProjects.length} sites</span>
           </div>
 
           {filteredProjects.length === 0 ? (
@@ -326,7 +315,9 @@ export default function MapView() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 + i * 0.04 }}
                   className={`glass-card p-4 cursor-pointer transition-all hover:bg-white/[0.05] ${
-                    isSelected ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10' : ''
+                    isSelected
+                      ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10'
+                      : ''
                   }`}
                   onClick={() => setSelected(p)}
                 >
@@ -370,4 +361,3 @@ export default function MapView() {
     </div>
   );
 }
-

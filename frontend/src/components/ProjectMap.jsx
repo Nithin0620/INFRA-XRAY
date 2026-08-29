@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { categoryIcon, riskScoreColor, formatINR } from '../lib/utils';
-import { Camera, AlertCircle, CheckCircle } from 'lucide-react';
+import { riskScoreColor, formatINR } from '../lib/utils';
+import { Camera } from 'lucide-react';
 
 // Custom DivIcon for Project Markers
 export function createProjectIcon(score, isSelected = false) {
@@ -189,8 +189,12 @@ export default function ProjectMap({
                 <div className="text-gray-600 mt-1">
                   {project.state} · {formatINR(project.sanctioned_amount_inr)}
                 </div>
-                <div className="mt-1.5 flex items-center gap-1 font-semibold" style={{ color: scoreColor }}>
-                  Risk Score: {project.risk_score ?? 'N/A'}/100 ({project.severity_label || 'Assessed'})
+                <div
+                  className="mt-1.5 flex items-center gap-1 font-semibold"
+                  style={{ color: scoreColor }}
+                >
+                  Risk Score: {project.risk_score ?? 'N/A'}/100 (
+                  {project.severity_label || 'Assessed'})
                 </div>
               </div>
             </Popup>
@@ -217,9 +221,7 @@ export default function ProjectMap({
                   <div className="mt-1 flex items-center gap-1 text-[11px]">
                     Condition:{' '}
                     <span
-                      className={`font-semibold ${
-                        isDamaged ? 'text-red-600' : 'text-green-600'
-                      }`}
+                      className={`font-semibold ${isDamaged ? 'text-red-600' : 'text-green-600'}`}
                     >
                       {photo.condition_tag?.replace('_', ' ')}
                     </span>

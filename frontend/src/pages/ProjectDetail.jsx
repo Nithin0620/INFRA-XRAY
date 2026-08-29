@@ -16,8 +16,6 @@ import {
   BarChart2,
   Camera,
   HelpCircle,
-  CheckCircle2,
-  Download,
 } from 'lucide-react';
 import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
@@ -267,18 +265,24 @@ export default function ProjectDetail() {
 
         {/* Tab 3: Geospatial Map & Photos */}
         {activeTab === 'map' && (
-          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
             <ProjectMap project={project} photos={photos} height="480px" />
 
             {/* Photos Strip */}
             {photos.length > 0 && (
               <div className="glass-card p-5">
                 <h3 className="text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
-                  <Camera className="w-4 h-4 text-brand-400" /> Geotagged Site Evidence Photos ({photos.length})
+                  <Camera className="w-4 h-4 text-brand-400" /> Geotagged Site Evidence Photos (
+                  {photos.length})
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {photos.map((ph, idx) => {
-                    const isDefect = ph.condition_tag === 'pothole' || ph.condition_tag === 'cracking';
+                    const isDefect =
+                      ph.condition_tag === 'pothole' || ph.condition_tag === 'cracking';
                     return (
                       <div
                         key={ph.photo_id || idx}
@@ -502,4 +506,3 @@ export default function ProjectDetail() {
     </div>
   );
 }
-

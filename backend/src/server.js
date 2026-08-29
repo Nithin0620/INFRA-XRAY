@@ -56,4 +56,3 @@ if (process.env.NODE_ENV === 'production') {
 server.listen(PORT, () => {
   console.log(`INFRA-XRAY API & WebSocket running on http://localhost:${PORT}`);
 });
-

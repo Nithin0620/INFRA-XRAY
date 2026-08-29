@@ -551,7 +551,9 @@ export default function UploadPage() {
                   >
                     <div
                       className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                        pipelineStep >= s.step ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-500'
+                        pipelineStep >= s.step
+                          ? 'bg-brand-500 text-white'
+                          : 'bg-gray-800 text-gray-500'
                       }`}
                     >
                       {s.step}
@@ -564,7 +566,9 @@ export default function UploadPage() {
               {/* Live Output Log */}
               {pipelineLogs.length > 0 && (
                 <div className="bg-black/60 border border-white/10 rounded-xl p-3 text-left font-mono text-[11px] text-gray-400 max-h-36 overflow-y-auto">
-                  <div className="text-[10px] uppercase text-gray-600 mb-1">Live Execution Stream:</div>
+                  <div className="text-[10px] uppercase text-gray-600 mb-1">
+                    Live Execution Stream:
+                  </div>
                   {pipelineLogs.map((log, i) => (
                     <div key={i} className="truncate text-gray-300">
                       &gt; {log}
