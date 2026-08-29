@@ -1,21 +1,92 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, ArrowRight } from 'lucide-react';
+import {
+  MapPin,
+  ArrowRight,
+  Filter,
+  Search,
+  Layers,
+  AlertTriangle,
+  Camera,
+  Compass,
+} from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { fetchProjects } from '../services/api';
-import { formatINR, categoryIcon, riskScoreColor } from '../lib/utils';
+import { formatINR, categoryIcon, riskScoreColor, severityColor } from '../lib/utils';
+import { createProjectIcon, createPhotoIcon } from '../components/ProjectMap';
+
+function MapController({ center, bounds, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    if (bounds && bounds.length > 0) {
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+    } else if (center) {
+      map.flyTo(center, zoom || 6, { duration: 1.2 });
+    }
+  }, [center, bounds, zoom, map]);
+  return null;
+}
 
 export default function MapView() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [severityFilter, setSeverityFilter] = useState('ALL');
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchProjects()
-      .then(setProjects)
+      .then((data) => {
+        setProjects(data || []);
+        if (data && data.length > 0) {
+          // Select high risk project by default for flagship view
+          const defaultProject = data.find((p) => p.project_id === 'proj_002') || data[0];
+          setSelected(defaultProject);
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  const filteredProjects = useMemo(() => {
+    return projects.filter((p) => {
+      if (severityFilter !== 'ALL') {
+        if (severityFilter === 'CRITICAL' && p.severity_label !== 'Critical') return false;
+        if (severityFilter === 'HIGH' && p.severity_label !== 'High') return false;
+        if (severityFilter === 'MODERATE' && p.severity_label !== 'Medium') return false;
+        if (severityFilter === 'CLEAN' && p.severity_label !== 'Low') return false;
+      }
+      if (categoryFilter !== 'ALL' && p.category !== categoryFilter) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesName = p.project_name?.toLowerCase().includes(q);
+        const matchesState = p.state?.toLowerCase().includes(q);
+        const matchesContractor = p.contractor_name?.toLowerCase().includes(q);
+        if (!matchesName && !matchesState && !matchesContractor) return false;
+      }
+      return true;
+    });
+  }, [projects, severityFilter, categoryFilter, searchQuery]);
+
+  // Compute map bounds or center
+  const { mapCenter, mapBounds, mapZoom } = useMemo(() => {
+    if (selected && selected.gps_boundary?.coordinates?.length > 0) {
+      const coords = selected.gps_boundary.coordinates;
+      if (coords.length === 1) {
+        return { mapCenter: [coords[0][0], coords[0][1]], mapBounds: null, mapZoom: 14 };
+      }
+      return {
+        mapCenter: null,
+        mapBounds: coords.map((c) => [c[0], c[1]]),
+        mapZoom: 14,
+      };
+    }
+    // Default pan to India center
+    return { mapCenter: [22.5937, 78.9629], mapBounds: null, mapZoom: 5 };
+  }, [selected]);
 
   if (loading) {
     return (
@@ -27,110 +98,276 @@ export default function MapView() {
 
   return (
     <div className="page-container">
+      {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight">
           Geographic <span className="text-brand-400">Risk</span> Overview
         </h1>
-        <p className="text-gray-500 mt-1">Portfolio-level view of all infrastructure projects</p>
+        <p className="text-gray-500 mt-1">
+          Interactive geospatial verification of all government infrastructure tenders across India
+        </p>
       </motion.div>
 
+      {/* Filter Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="glass-card p-4 mb-6 flex flex-wrap items-center gap-4 justify-between"
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Search */}
+          <div className="relative">
+            <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search project, state..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-black/30 border border-white/10 rounded-xl pl-9 pr-4 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-500/50"
+            />
+          </div>
+
+          {/* Severity Filter */}
+          <div className="flex items-center gap-1 bg-black/30 p-1 rounded-xl border border-white/10 text-xs">
+            {['ALL', 'CRITICAL', 'HIGH', 'CLEAN'].map((lvl) => (
+              <button
+                key={lvl}
+                onClick={() => setSeverityFilter(lvl)}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                  severityFilter === lvl
+                    ? 'bg-brand-600 text-white shadow'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                {lvl}
+              </button>
+            ))}
+          </div>
+
+          {/* Category Filter */}
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-brand-500/50"
+          >
+            <option value="ALL">All Categories</option>
+            <option value="road">Roads</option>
+            <option value="bridge">Bridges</option>
+            <option value="building">Buildings</option>
+            <option value="pipeline">Pipelines</option>
+          </select>
+        </div>
+
+        <div className="text-xs text-gray-500 flex items-center gap-1.5">
+          <Layers className="w-4 h-4 text-brand-400" />
+          Showing <span className="text-gray-300 font-semibold">{filteredProjects.length}</span> of{' '}
+          {projects.length} projects
+        </div>
+      </motion.div>
+
+      {/* Main Grid: Interactive Map + Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Map placeholder — will be replaced with Leaflet in Phase 8 */}
+        {/* Interactive Leaflet Map */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="lg:col-span-2 glass-card min-h-[500px] flex items-center justify-center relative overflow-hidden"
+          className="lg:col-span-2 glass-card h-[600px] overflow-hidden relative z-0 flex flex-col"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-900/20 via-transparent to-brand-900/10" />
-          <div className="text-center z-10">
-            <MapPin className="w-12 h-12 text-brand-400/50 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm">Interactive map will be rendered here</p>
-            <p className="text-gray-600 text-xs mt-1">
-              React-Leaflet integration coming in Phase 8
-            </p>
-          </div>
+          <MapContainer
+            center={mapCenter || [22.5937, 78.9629]}
+            zoom={mapZoom || 5}
+            style={{ height: '100%', width: '100%', background: '#090d16' }}
+            scrollWheelZoom={true}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              maxZoom={19}
+            />
 
-          {/* Mini project cards overlaid on map area */}
-          <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto pb-2">
-            {projects.map((p) => {
+            <MapController center={mapCenter} bounds={mapBounds} zoom={mapZoom} />
+
+            {/* Render Markers for all visible projects */}
+            {filteredProjects.map((p) => {
+              const coords = p.gps_boundary?.coordinates || [];
+              if (coords.length === 0) return null;
+              const isSelected = selected?.project_id === p.project_id;
+              const pos = coords[0];
+              const isPolygon = p.gps_boundary?.type === 'Polygon';
+              const scoreColor = riskScoreColor(p.risk_score);
+
               return (
-                <button
-                  key={p.project_id}
-                  onClick={() => setSelected(p)}
-                  className={`shrink-0 glass-card px-3 py-2 text-left text-xs transition-all hover:bg-white/[0.06] ${
-                    selected?.project_id === p.project_id
-                      ? 'border-brand-500/40 bg-brand-500/5'
-                      : ''
-                  }`}
-                >
-                  <div className="font-medium text-gray-300 flex items-center gap-1.5">
-                    {categoryIcon(p.category)} {p.project_name.split(',')[0]}
-                  </div>
-                  <div className="text-gray-500 mt-0.5">
-                    {p.state} · Risk: {p.risk_score ?? '—'}
-                  </div>
-                </button>
+                <div key={p.project_id}>
+                  {/* Marker Pin */}
+                  <Marker
+                    position={[pos[0], pos[1]]}
+                    icon={createProjectIcon(p.risk_score, isSelected)}
+                    eventHandlers={{
+                      click: () => setSelected(p),
+                    }}
+                  >
+                    <Popup className="custom-leaflet-popup">
+                      <div className="p-2 text-xs">
+                        <div className="font-bold text-gray-900 flex items-center gap-1.5">
+                          {categoryIcon(p.category)} {p.project_name}
+                        </div>
+                        <div className="text-gray-600 mt-1">
+                          {p.state} · {formatINR(p.sanctioned_amount_inr)}
+                        </div>
+                        <div
+                          className="mt-1.5 flex items-center gap-1 font-semibold"
+                          style={{ color: scoreColor }}
+                        >
+                          Risk: {p.risk_score ?? 'N/A'}/100 ({p.severity_label})
+                        </div>
+                        <Link
+                          to={`/project/${p.project_id}`}
+                          className="mt-2 inline-flex items-center gap-1 text-brand-600 font-bold hover:underline"
+                        >
+                          Open project details <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </Popup>
+                  </Marker>
+
+                  {/* Draw Geometry if Selected */}
+                  {isSelected && isPolygon && (
+                    <Polygon
+                      positions={coords}
+                      pathOptions={{
+                        color: scoreColor,
+                        fillColor: scoreColor,
+                        fillOpacity: 0.25,
+                        weight: 3,
+                        dashArray: p.risk_score >= 70 ? '6, 6' : undefined,
+                      }}
+                    />
+                  )}
+
+                  {isSelected && !isPolygon && (
+                    <Polyline
+                      positions={coords}
+                      pathOptions={{
+                        color: scoreColor,
+                        weight: 4.5,
+                        opacity: 0.9,
+                        dashArray: p.risk_score >= 70 ? '8, 6' : undefined,
+                      }}
+                    />
+                  )}
+                </div>
               );
             })}
-          </div>
+          </MapContainer>
+
+          {/* Quick Overlay Footer */}
+          {selected && (
+            <div className="absolute bottom-3 left-3 right-3 z-10 glass-card p-3 flex items-center justify-between backdrop-blur-xl border border-white/10">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs"
+                  style={{
+                    backgroundColor: `${riskScoreColor(selected.risk_score)}25`,
+                    color: riskScoreColor(selected.risk_score),
+                    border: `1.5px solid ${riskScoreColor(selected.risk_score)}`,
+                  }}
+                >
+                  {selected.risk_score ?? '—'}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-gray-200 line-clamp-1">
+                    {selected.project_name}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    {selected.state} · {formatINR(selected.sanctioned_amount_inr)} ·{' '}
+                    {selected.sanctioned_quantity} {selected.unit}
+                  </div>
+                </div>
+              </div>
+              <Link
+                to={`/project/${selected.project_id}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-medium transition-colors shrink-0"
+              >
+                Inspect Details <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
         </motion.div>
 
-        {/* Project list sidebar */}
+        {/* Project List Sidebar */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="space-y-3"
+          className="space-y-3 max-h-[600px] overflow-y-auto pr-1"
         >
-          <h2 className="section-title">
-            <MapPin className="w-4 h-4 text-brand-400" /> Projects
-          </h2>
-          {projects.map((p, i) => (
-            <motion.div
-              key={p.project_id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 + i * 0.05 }}
-              className={`glass-card p-4 cursor-pointer transition-all hover:bg-white/[0.04] ${
-                selected?.project_id === p.project_id ? 'border-brand-500/40 bg-brand-500/5' : ''
-              }`}
-              onClick={() => setSelected(p)}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-sm font-medium text-gray-200 flex items-center gap-1.5">
-                    {categoryIcon(p.category)} {p.project_name.split(',')[0]}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {p.state} · {formatINR(p.sanctioned_amount_inr)}
-                  </div>
-                </div>
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{
-                    backgroundColor: `${riskScoreColor(p.risk_score)}20`,
-                    color: riskScoreColor(p.risk_score),
-                  }}
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="section-title text-base">
+              <Compass className="w-4 h-4 text-brand-400" /> Monitored Projects
+            </h2>
+            <span className="text-xs text-gray-500 font-mono">
+              {filteredProjects.length} sites
+            </span>
+          </div>
+
+          {filteredProjects.length === 0 ? (
+            <div className="glass-card p-6 text-center text-xs text-gray-500">
+              No projects matching selected filters.
+            </div>
+          ) : (
+            filteredProjects.map((p, i) => {
+              const isSelected = selected?.project_id === p.project_id;
+              return (
+                <motion.div
+                  key={p.project_id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.04 }}
+                  className={`glass-card p-4 cursor-pointer transition-all hover:bg-white/[0.05] ${
+                    isSelected ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10' : ''
+                  }`}
+                  onClick={() => setSelected(p)}
                 >
-                  {p.risk_score ?? '—'}
-                </div>
-              </div>
-              {p.gps_boundary?.coordinates?.[0] && (
-                <div className="text-[10px] text-gray-600 font-mono mt-2">
-                  [{p.gps_boundary.coordinates[0].join(', ')}]
-                </div>
-              )}
-              <Link
-                to={`/project/${p.project_id}`}
-                className="text-xs text-brand-400 hover:text-brand-300 mt-2 inline-flex items-center gap-1"
-              >
-                View details <ArrowRight className="w-3 h-3" />
-              </Link>
-            </motion.div>
-          ))}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="text-sm font-medium text-gray-200 flex items-center gap-1.5 line-clamp-1">
+                        {categoryIcon(p.category)} {p.project_name}
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        {p.state} · {formatINR(p.sanctioned_amount_inr)}
+                      </div>
+                    </div>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                      style={{
+                        backgroundColor: `${riskScoreColor(p.risk_score)}20`,
+                        color: riskScoreColor(p.risk_score),
+                        border: `1px solid ${riskScoreColor(p.risk_score)}60`,
+                      }}
+                    >
+                      {p.risk_score ?? '—'}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex items-center justify-between text-xs">
+                    <span className={severityColor(p.severity_label)}>{p.severity_label}</span>
+                    <Link
+                      to={`/project/${p.project_id}`}
+                      className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 font-medium"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Audit Details <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </motion.div>
+              );
+            })
+          )}
         </motion.div>
       </div>
     </div>
   );
 }
+

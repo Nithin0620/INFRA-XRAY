@@ -152,16 +152,57 @@ export default function UploadPage() {
     }
   };
 
+  // Pipeline detailed progress state
+  const [pipelineStep, setPipelineStep] = useState(0);
+  const [pipelineTotalSteps, setPipelineTotalSteps] = useState(6);
+  const [pipelineStage, setPipelineStage] = useState('');
+  const [pipelineLogs, setPipelineLogs] = useState([]);
+
   // Start processing pipeline
   const startProcessing = async () => {
     setProcessing(true);
-    setStatus('Starting pipeline...');
+    setStatus('Initializing pipeline...');
+    setPipelineStep(0);
+    setPipelineLogs([]);
+
+    // Connect to WebSocket for live event streaming
+    let ws;
+    try {
+      ws = new WebSocket('ws://localhost:3001/ws');
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'subscribe', projectId }));
+      };
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'pipeline_progress' && data.projectId === projectId) {
+            if (data.stage) setPipelineStage(data.stage);
+            if (data.step) setPipelineStep(data.step);
+            if (data.totalSteps) setPipelineTotalSteps(data.totalSteps);
+            if (data.message) setStatus(data.message);
+            if (data.log) {
+              setPipelineLogs((prev) => [...prev.slice(-30), data.log]);
+            }
+            if (data.status === 'completed') {
+              setStatus('All verification stages complete!');
+              setProcessing(false);
+              setTimeout(() => {
+                navigate(`/project/${projectId}`);
+              }, 1500);
+            }
+          }
+        } catch (e) {
+          console.error('Error handling WS message:', e);
+        }
+      };
+    } catch (wsErr) {
+      console.warn('WebSocket connection failed, falling back to polling:', wsErr);
+    }
 
     try {
       await axios.post(`${API}/upload/${projectId}/process`);
-      setStatus('Processing started. This may take a few minutes...');
 
-      // Poll for status
+      // Fallback Polling in case WebSocket is closed or blocked
       const pollInterval = setInterval(async () => {
         try {
           const response = await axios.get(`${API}/upload/${projectId}/status`);
@@ -169,12 +210,15 @@ export default function UploadPage() {
 
           if (projectStatus === 'completed') {
             clearInterval(pollInterval);
+            if (ws && ws.readyState === WebSocket.OPEN) ws.close();
             setStatus('Processing complete!');
+            setProcessing(false);
             setTimeout(() => {
               navigate(`/project/${projectId}`);
             }, 1500);
           } else if (projectStatus === 'failed') {
             clearInterval(pollInterval);
+            if (ws && ws.readyState === WebSocket.OPEN) ws.close();
             setStatus('Processing failed. Please try again.');
             setProcessing(false);
           }
@@ -467,29 +511,73 @@ export default function UploadPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-6 text-center"
+          className="glass-card p-6 text-center max-w-2xl mx-auto"
         >
           {processing ? (
             <>
-              <Loader2 className="w-16 h-16 text-brand-400 mx-auto mb-6 animate-spin" />
-              <h2 className="text-xl font-semibold text-gray-200 mb-2">Processing Documents</h2>
-              <p className="text-gray-400">{status}</p>
-              <div className="mt-6 w-full max-w-xs mx-auto">
-                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-brand-500"
-                    initial={{ width: '0%' }}
-                    animate={{ width: '100%' }}
-                    transition={{ duration: 30, ease: 'linear' }}
-                  />
-                </div>
+              <Loader2 className="w-12 h-12 text-brand-400 mx-auto mb-4 animate-spin" />
+              <h2 className="text-xl font-semibold text-gray-200 mb-1">
+                {pipelineStage || 'Processing Documents'}
+              </h2>
+              <p className="text-sm text-gray-400 mb-6">{status}</p>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-900 rounded-full h-3 mb-6 p-0.5 border border-white/10 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-brand-600 to-cyan-500 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.max(10, (pipelineStep / pipelineTotalSteps) * 100)}%`,
+                  }}
+                />
               </div>
+
+              {/* Stage Indicators */}
+              <div className="grid grid-cols-3 gap-2 mb-6 text-left">
+                {[
+                  { step: 1, name: 'Quality Check' },
+                  { step: 2, name: 'Doc Extraction' },
+                  { step: 3, name: 'Cross-Verification' },
+                  { step: 4, name: 'Computer Vision' },
+                  { step: 5, name: 'Geospatial Alignment' },
+                  { step: 6, name: 'Anomaly & Risk' },
+                ].map((s) => (
+                  <div
+                    key={s.step}
+                    className={`p-2 rounded-lg border text-xs flex items-center gap-2 ${
+                      pipelineStep >= s.step
+                        ? 'bg-brand-500/10 border-brand-500/30 text-brand-300'
+                        : 'bg-white/[0.02] border-white/5 text-gray-600'
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                        pipelineStep >= s.step ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-500'
+                      }`}
+                    >
+                      {s.step}
+                    </div>
+                    <span className="truncate">{s.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Live Output Log */}
+              {pipelineLogs.length > 0 && (
+                <div className="bg-black/60 border border-white/10 rounded-xl p-3 text-left font-mono text-[11px] text-gray-400 max-h-36 overflow-y-auto">
+                  <div className="text-[10px] uppercase text-gray-600 mb-1">Live Execution Stream:</div>
+                  {pipelineLogs.map((log, i) => (
+                    <div key={i} className="truncate text-gray-300">
+                      &gt; {log}
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           ) : (
             <>
-              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
-              <h2 className="text-xl font-semibold text-gray-200 mb-2">Processing Complete!</h2>
-              <p className="text-gray-400 mb-6">Redirecting to project details...</p>
+              <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-200 mb-2">Verification Complete!</h2>
+              <p className="text-gray-400 mb-6">{status || 'Redirecting to project details...'}</p>
             </>
           )}
         </motion.div>

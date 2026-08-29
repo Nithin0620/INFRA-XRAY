@@ -4,6 +4,7 @@
   "description": "INFRA-XRAY — Express API Server",
   "main": "src/server.js",
   "scripts": {
+    "test": "node --test test/api.test.js",
     "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write src",
     "start": "node src/server.js",

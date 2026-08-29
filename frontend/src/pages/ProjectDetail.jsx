@@ -12,10 +12,19 @@ import {
   Bot,
   RefreshCw,
   Shield,
+  Layers,
+  BarChart2,
+  Camera,
+  HelpCircle,
+  CheckCircle2,
+  Download,
 } from 'lucide-react';
 import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
 import FlagCard from '../components/FlagCard';
+import ProjectMap from '../components/ProjectMap';
+import EvidenceGraph from '../components/EvidenceGraph';
+import ProjectAnalyticsChart from '../components/ProjectAnalyticsChart';
 import { formatINR, cn } from '../lib/utils';
 
 const funnelStages = [
@@ -64,6 +73,7 @@ export default function ProjectDetail() {
   const [copilotLoading, setCopilotLoading] = useState(false);
   const [feedbackMap, setFeedbackMap] = useState({});
   const [expandedFlags, setExpandedFlags] = useState(true);
+  const [activeTab, setActiveTab] = useState('graph'); // 'graph' | 'analytics' | 'map' | 'photos'
 
   useEffect(() => {
     Promise.all([fetchProject(id), fetchFeedback(id)])
@@ -141,6 +151,7 @@ export default function ProjectDetail() {
 
   const redFlags = allFlags.filter((f) => f.severity === 'red');
   const yellowFlags = allFlags.filter((f) => f.severity === 'yellow');
+  const photos = extracted?.photos || [];
 
   return (
     <div className="page-container">
@@ -193,7 +204,7 @@ export default function ProjectDetail() {
           className="mb-6"
         >
           <h2 className="section-title mb-4">
-            <Shield className="w-5 h-5 text-brand-400" /> Evidence Timeline
+            <Shield className="w-5 h-5 text-brand-400" /> Evidence Timeline Funnel
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {funnelStages.map(({ key, label, icon: Icon, color }, i) => {
@@ -218,6 +229,94 @@ export default function ProjectDetail() {
         </motion.div>
       )}
 
+      {/* Deep Audit Exploration Tabs */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 border-b border-white/10 pb-2 mb-4 overflow-x-auto">
+          {[
+            { id: 'graph', label: 'Evidence Graph (React Flow)', icon: Layers },
+            { id: 'analytics', label: 'Financial & Quantity Audits', icon: BarChart2 },
+            { id: 'map', label: 'Geospatial Alignment & Site Photos', icon: MapPin },
+          ].map(({ id: tabId, label, icon: Icon }) => (
+            <button
+              key={tabId}
+              onClick={() => setActiveTab(tabId)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 ${
+                activeTab === tabId
+                  ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+              }`}
+            >
+              <Icon className="w-4 h-4" /> {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab 1: Evidence Graph */}
+        {activeTab === 'graph' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+            <EvidenceGraph project={project} extracted={extracted} flags={allFlags} />
+          </motion.div>
+        )}
+
+        {/* Tab 2: Financial & Quantity Audit Charts */}
+        {activeTab === 'analytics' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+            <ProjectAnalyticsChart project={project} extracted={extracted} />
+          </motion.div>
+        )}
+
+        {/* Tab 3: Geospatial Map & Photos */}
+        {activeTab === 'map' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <ProjectMap project={project} photos={photos} height="480px" />
+
+            {/* Photos Strip */}
+            {photos.length > 0 && (
+              <div className="glass-card p-5">
+                <h3 className="text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                  <Camera className="w-4 h-4 text-brand-400" /> Geotagged Site Evidence Photos ({photos.length})
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  {photos.map((ph, idx) => {
+                    const isDefect = ph.condition_tag === 'pothole' || ph.condition_tag === 'cracking';
+                    return (
+                      <div
+                        key={ph.photo_id || idx}
+                        className="rounded-xl border border-white/10 bg-black/40 overflow-hidden group"
+                      >
+                        <div className="h-32 bg-gray-900 overflow-hidden relative">
+                          <img
+                            src={`http://localhost:3001/data/${ph.filepath}`}
+                            alt={ph.photo_id}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                          <span
+                            className={`absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold ${
+                              isDefect ? 'bg-red-500/90 text-white' : 'bg-green-500/90 text-white'
+                            }`}
+                          >
+                            {ph.condition_tag?.replace('_', ' ')}
+                          </span>
+                        </div>
+                        <div className="p-3 text-xs">
+                          <div className="font-bold text-gray-200">{ph.photo_id}</div>
+                          <div className="text-[10px] text-gray-500 font-mono mt-0.5">
+                            {ph.gps_lat?.toFixed(4)}, {ph.gps_lon?.toFixed(4)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </div>
+
       {/* Flags */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -230,7 +329,7 @@ export default function ProjectDetail() {
           className="section-title mb-4 hover:text-white transition-colors"
         >
           {expandedFlags ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          Flags ({allFlags.length})
+          Detected Forensic Flags ({allFlags.length})
           {redFlags.length > 0 && (
             <span className="ml-2 text-xs bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full">
               {redFlags.length} critical
@@ -282,9 +381,16 @@ export default function ProjectDetail() {
         transition={{ delay: 0.3 }}
         className="glass-card p-6 mb-6"
       >
-        <h2 className="section-title mb-4">
-          <Bot className="w-5 h-5 text-brand-400" /> AI Inspector Copilot
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="section-title">
+            <Bot className="w-5 h-5 text-brand-400" /> AI Inspector Copilot
+          </h2>
+          {copilot?.llm_generated && (
+            <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">
+              Anthropic Claude Live Intelligence
+            </span>
+          )}
+        </div>
 
         {!copilot && (
           <button
@@ -298,18 +404,18 @@ export default function ProjectDetail() {
           >
             {copilotLoading ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Generating...
+                <RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Project Evidence...
               </>
             ) : (
               <>
-                <Bot className="w-4 h-4" /> Generate Inspection Checklist
+                <Bot className="w-4 h-4" /> Generate Field Inspection Action Plan
               </>
             )}
           </button>
         )}
 
         {copilot && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Sampling strategy */}
             <div
               className={cn(
@@ -322,7 +428,7 @@ export default function ProjectDetail() {
               )}
             >
               <div className="text-xs uppercase tracking-wider text-gray-500 mb-1">
-                Recommended Action
+                Recommended Sampling Strategy
               </div>
               <div className="font-semibold text-gray-200 capitalize">
                 {copilot.sampling_strategy.replace(/_/g, ' ')}
@@ -330,15 +436,32 @@ export default function ProjectDetail() {
               <p className="text-sm text-gray-400 mt-1">{copilot.sampling_explanation}</p>
             </div>
 
+            {/* Contractor Inquiries */}
+            {copilot.contractor_inquiries?.length > 0 && (
+              <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                <h3 className="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-2 flex items-center gap-1.5">
+                  <HelpCircle className="w-4 h-4" /> Evidence Discrepancy Inquiries for Contractor
+                </h3>
+                <ul className="space-y-1.5">
+                  {copilot.contractor_inquiries.map((inq, idx) => (
+                    <li key={idx} className="text-xs text-gray-300 flex items-start gap-2">
+                      <span className="text-blue-400 mt-0.5">•</span>
+                      <span>{inq}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Checklist */}
             {copilot.checklist?.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-gray-400 mb-2">Inspection Checklist</h3>
+                <h3 className="text-sm font-medium text-gray-400 mb-2">Ground Inspection Tasks</h3>
                 <div className="space-y-2">
                   {copilot.checklist.map((item, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5"
+                      className="flex items-start gap-3 p-3.5 rounded-lg bg-white/[0.02] border border-white/5"
                     >
                       <div
                         className={cn(
@@ -350,11 +473,16 @@ export default function ProjectDetail() {
                       >
                         {i + 1}
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-300">{item.item}</p>
-                        <p className="text-xs text-gray-500 mt-0.5 font-mono">
-                          Ref: {item.reference}
-                        </p>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-200">{item.item}</p>
+                        <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-gray-500">
+                          <span className="font-mono text-gray-400">Ref: {item.reference}</span>
+                          {item.verification_method && (
+                            <span className="text-brand-400/90 font-medium">
+                              Method: {item.verification_method}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -366,7 +494,7 @@ export default function ProjectDetail() {
               onClick={handleCopilot}
               className="text-xs text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
             >
-              <RefreshCw className="w-3 h-3" /> Regenerate
+              <RefreshCw className="w-3 h-3" /> Regenerate Plan
             </button>
           </div>
         )}
@@ -374,3 +502,4 @@ export default function ProjectDetail() {
     </div>
   );
 }
+

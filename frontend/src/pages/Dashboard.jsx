@@ -128,6 +128,134 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
+      {/* Portfolio Analytics Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Risk Distribution Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glass-card p-5 lg:col-span-1 flex flex-col justify-between"
+        >
+          <div className="mb-2">
+            <h3 className="text-sm font-semibold text-gray-200">Portfolio Risk Distribution</h3>
+            <p className="text-xs text-gray-500">Tenders categorized by severity level</p>
+          </div>
+          <div className="h-52 w-full flex items-center justify-center">
+            {/* Severity Distribution */}
+            <div className="w-full space-y-3">
+              {[
+                {
+                  label: 'Critical Risk (71-100)',
+                  count: projects.filter((p) => (p.risk_score || 0) >= 71).length,
+                  color: 'bg-red-500',
+                  textColor: 'text-red-400',
+                },
+                {
+                  label: 'High Risk (46-70)',
+                  count: projects.filter((p) => (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71).length,
+                  color: 'bg-orange-500',
+                  textColor: 'text-orange-400',
+                },
+                {
+                  label: 'Moderate Risk (21-45)',
+                  count: projects.filter((p) => (p.risk_score || 0) >= 21 && (p.risk_score || 0) < 46).length,
+                  color: 'bg-yellow-500',
+                  textColor: 'text-yellow-400',
+                },
+                {
+                  label: 'Low / Clean (0-20)',
+                  count: projects.filter((p) => (p.risk_score || 0) < 21).length,
+                  color: 'bg-green-500',
+                  textColor: 'text-green-400',
+                },
+              ].map((item) => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-gray-400">{item.label}</span>
+                    <span className={`font-bold font-mono ${item.textColor}`}>
+                      {item.count} ({projects.length ? Math.round((item.count / projects.length) * 100) : 0}%)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${item.color}`}
+                      style={{
+                        width: `${projects.length ? (item.count / projects.length) * 100 : 0}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Project Comparison Bar Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="glass-card p-5 lg:col-span-2"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-200">Sanctioned Value vs Risk Severity</h3>
+              <p className="text-xs text-gray-500">Comparing financial exposure against verified risk</p>
+            </div>
+            <span className="text-[11px] text-gray-400 bg-white/5 px-2 py-1 rounded">
+              High Risk = Immediate Audit Required
+            </span>
+          </div>
+
+          <div className="h-52 w-full">
+            <div className="h-full flex items-end gap-3 pt-6 pb-2 px-2 overflow-x-auto">
+              {projects.map((p) => {
+                const maxVal = Math.max(...projects.map((x) => x.sanctioned_amount_inr || 1));
+                const heightPercent = Math.max(15, Math.round(((p.sanctioned_amount_inr || 0) / maxVal) * 100));
+                const isCrit = (p.risk_score || 0) >= 71;
+                const isHigh = (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71;
+
+                return (
+                  <Link
+                    key={p.project_id}
+                    to={`/project/${p.project_id}`}
+                    className="flex-1 min-w-[70px] flex flex-col items-center gap-2 group cursor-pointer"
+                  >
+                    <span className="text-[10px] font-mono text-gray-400 group-hover:text-white transition-colors">
+                      {formatINR(p.sanctioned_amount_inr)}
+                    </span>
+                    <div className="w-full bg-gray-900 rounded-t-lg overflow-hidden flex items-end h-28 border border-white/5 group-hover:border-white/20 transition-all">
+                      <div
+                        className={`w-full rounded-t transition-all duration-500 ${
+                          isCrit
+                            ? 'bg-red-500/80 group-hover:bg-red-500'
+                            : isHigh
+                              ? 'bg-orange-500/80 group-hover:bg-orange-500'
+                              : 'bg-brand-500/80 group-hover:bg-brand-500'
+                        }`}
+                        style={{ height: `${heightPercent}%` }}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[11px] font-bold text-gray-300 truncate max-w-[75px]">
+                        {p.project_id}
+                      </div>
+                      <div
+                        className="text-[10px] font-bold font-mono"
+                        style={{ color: isCrit ? '#ef4444' : isHigh ? '#f97316' : '#10b981' }}
+                      >
+                        Risk: {p.risk_score ?? '—'}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
       {/* Projects Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -20,8 +20,9 @@ React (Vite + Tailwind)  →  Express API  →  Data files (JSON)
 | 5 | Computer Vision Module | ✅ DONE | Heuristic damage classifier (OpenCV + Pillow fallback) |
 | 6 | Geospatial Verification | ✅ DONE | GPS boundary/route checks |
 | 7 | Anomaly Engine + Risk Scoring | ✅ DONE | Flag merge + weighted scoring 0-100 |
-| 8 | React UI Polish + Leaflet + React Flow | ⬜ TODO | Full interactive maps, evidence graph, animations |
-| 9 | AI Copilot + Feedback + Demo Polish | ⬜ TODO | Anthropic copilot, feedback loop, final UI |
+| 8 | React UI Polish + Leaflet + React Flow | ✅ DONE | Full interactive React-Leaflet map, React Flow evidence graph, Recharts |
+| 9 | AI Copilot + Feedback + Demo Polish | ✅ DONE | Anthropic Claude Copilot + contextual fallback, WebSocket pipeline streaming, test suites |
+
 
 ## Key Decisions
 

@@ -190,71 +190,87 @@ router.post('/:id/process', (req, res) => {
 
   // Spawn Python pipeline in background
   const { spawn } = require('child_process');
+  const { broadcastProgress } = require('./websocket');
   const pythonDir = path.join(DATA_DIR, '..', 'python-worker');
+  const venvPython = path.join(pythonDir, '.venv', 'bin', 'python');
+  const pythonCmd = fs.existsSync(venvPython) ? venvPython : 'python3';
 
-  // Run quality check first
-  const qualityCheck = spawn('python3', ['run_quality_check.py'], {
-    cwd: pythonDir,
-    env: { ...process.env, PROJECT_ID: projectId },
+  const stages = [
+    { name: 'Quality Check', script: 'run_quality_check.py', step: 1, total: 6 },
+    { name: 'Document Extraction', script: 'run_extraction.py', step: 2, total: 6 },
+    { name: 'Cross-Verification', script: 'verification/run_verification.py', step: 3, total: 6 },
+    { name: 'Computer Vision Analysis', script: 'vision/run_vision_check.py', step: 4, total: 6 },
+    { name: 'Geospatial Alignment', script: 'geospatial/run_geo_check.py', step: 5, total: 6 },
+    { name: 'Anomaly Engine & Risk Scoring', script: 'anomaly/run_anomaly_engine.py', step: 6, total: 6 },
+  ];
+
+  broadcastProgress(projectId, {
+    status: 'started',
+    step: 0,
+    totalSteps: stages.length,
+    stage: 'Initializing pipeline',
+    message: 'Starting full verification pipeline...',
   });
 
-  qualityCheck.stdout.on('data', (data) => {
-    console.log(`Quality check: ${data}`);
-  });
+  const runStage = (index) => {
+    if (index >= stages.length) {
+      // Completed all stages
+      const finalProjects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
+      const finalUpdated = finalProjects.map((p) => {
+        if (p.project_id === projectId) {
+          return { ...p, status: 'completed', completed_at: new Date().toISOString() };
+        }
+        return p;
+      });
+      fs.writeFileSync(projectsPath, JSON.stringify(finalUpdated, null, 2));
 
-  qualityCheck.stderr.on('data', (data) => {
-    console.error(`Quality check error: ${data}`);
-  });
+      broadcastProgress(projectId, {
+        status: 'completed',
+        step: stages.length,
+        totalSteps: stages.length,
+        stage: 'Completed',
+        message: 'All verification stages successfully executed.',
+      });
+      return;
+    }
 
-  qualityCheck.on('close', (code) => {
-    console.log(`Quality check exited with code ${code}`);
+    const stage = stages[index];
+    broadcastProgress(projectId, {
+      status: 'processing',
+      step: stage.step,
+      totalSteps: stages.length,
+      stage: stage.name,
+      message: `Executing ${stage.name}...`,
+    });
 
-    // Run extraction
-    const extraction = spawn('python3', ['run_extraction.py'], {
+    const proc = spawn(pythonCmd, [stage.script], {
       cwd: pythonDir,
       env: { ...process.env, PROJECT_ID: projectId },
     });
 
-    extraction.stdout.on('data', (data) => {
-      console.log(`Extraction: ${data}`);
-    });
-
-    extraction.stderr.on('data', (data) => {
-      console.error(`Extraction error: ${data}`);
-    });
-
-    extraction.on('close', (extractionCode) => {
-      console.log(`Extraction exited with code ${extractionCode}`);
-
-      // Run verification
-      const verification = spawn('python3', ['verification/run_verification.py'], {
-        cwd: pythonDir,
-        env: { ...process.env, PROJECT_ID: projectId },
-      });
-
-      verification.stdout.on('data', (data) => {
-        console.log(`Verification: ${data}`);
-      });
-
-      verification.stderr.on('data', (data) => {
-        console.error(`Verification error: ${data}`);
-      });
-
-      verification.on('close', (verifyCode) => {
-        console.log(`Verification exited with code ${verifyCode}`);
-
-        // Update project status to completed
-        const finalProjects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
-        const finalUpdated = finalProjects.map((p) => {
-          if (p.project_id === projectId) {
-            return { ...p, status: 'completed', completed_at: new Date().toISOString() };
-          }
-          return p;
-        });
-        fs.writeFileSync(projectsPath, JSON.stringify(finalUpdated, null, 2));
+    proc.stdout.on('data', (data) => {
+      broadcastProgress(projectId, {
+        status: 'processing',
+        step: stage.step,
+        totalSteps: stages.length,
+        stage: stage.name,
+        log: data.toString().trim(),
       });
     });
-  });
+
+    proc.stderr.on('data', (data) => {
+      console.warn(`[Pipeline ${stage.name}] ${data}`);
+    });
+
+    proc.on('close', (code) => {
+      if (code !== 0) {
+        console.warn(`Stage ${stage.name} exited with code ${code}`);
+      }
+      runStage(index + 1);
+    });
+  };
+
+  runStage(0);
 
   res.json({
     message: 'Pipeline started',
