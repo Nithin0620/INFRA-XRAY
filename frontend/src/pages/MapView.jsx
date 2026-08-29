@@ -2,21 +2,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  MapPin,
-  ArrowRight,
-  Filter,
-  Search,
-  Layers,
-  AlertTriangle,
-  Camera,
-  Compass,
-} from 'lucide-react';
+import { ArrowRight, Search, Layers, Compass } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
-import L from 'leaflet';
 import { fetchProjects } from '../services/api';
 import { formatINR, categoryIcon, riskScoreColor, severityColor } from '../lib/utils';
-import { createProjectIcon, createPhotoIcon } from '../components/ProjectMap';
+import { createProjectIcon } from '../components/ProjectMap';
 
 function MapController({ center, bounds, zoom }) {
   const map = useMap();

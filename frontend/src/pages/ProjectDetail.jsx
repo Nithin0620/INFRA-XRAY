@@ -17,8 +17,6 @@ import {
   BarChart2,
   Camera,
   HelpCircle,
-  CheckCircle2,
-  Download,
 } from 'lucide-react';
 import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
