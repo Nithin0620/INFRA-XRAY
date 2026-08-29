@@ -17,6 +17,8 @@ import {
   BarChart2,
   Camera,
   HelpCircle,
+  CheckCircle2,
+  Download,
 } from 'lucide-react';
 import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
@@ -217,7 +219,9 @@ export default function ProjectDetail() {
                   className={cn('rounded-xl p-4 border border-brand-50 bg-gradient-to-b', color)}
                 >
                   <Icon className="w-4 h-4 text-brand-muted mb-2" />
-                  <div className="text-xs text-brand-muted uppercase tracking-wider mb-1">{label}</div>
+                  <div className="text-xs text-brand-muted uppercase tracking-wider mb-1">
+                    {label}
+                  </div>
                   <div className="text-sm font-semibold text-brand-text">
                     {value || <span className="text-gray-600">Not processed</span>}
                   </div>
@@ -300,7 +304,9 @@ export default function ProjectDetail() {
                           />
                           <span
                             className={`absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold ${
-                              isDefect ? 'bg-red-500/90 text-brand-text' : 'bg-green-500/90 text-brand-text'
+                              isDefect
+                                ? 'bg-red-500/90 text-brand-text'
+                                : 'bg-green-500/90 text-brand-text'
                             }`}
                           >
                             {ph.condition_tag?.replace('_', ' ')}
@@ -461,7 +467,9 @@ export default function ProjectDetail() {
             {/* Checklist */}
             {copilot.checklist?.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-brand-muted mb-2">Ground Inspection Tasks</h3>
+                <h3 className="text-sm font-medium text-brand-muted mb-2">
+                  Ground Inspection Tasks
+                </h3>
                 <div className="space-y-2">
                   {copilot.checklist.map((item, i) => (
                     <div

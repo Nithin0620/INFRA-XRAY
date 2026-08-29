@@ -354,7 +354,9 @@ export default function Dashboard() {
                           }}
                         />
                       </div>
-                      <span className="text-sm font-mono text-brand-muted">{p.risk_score ?? '—'}</span>
+                      <span className="text-sm font-mono text-brand-muted">
+                        {p.risk_score ?? '—'}
+                      </span>
                     </div>
                   </td>
                   <td className="px-5 py-4">

@@ -308,7 +308,10 @@ export default function UploadPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Project Name */}
             <div className="md:col-span-2">
-              <label htmlFor="projectName" className="block text-sm font-medium text-brand-muted mb-2">
+              <label
+                htmlFor="projectName"
+                className="block text-sm font-medium text-brand-muted mb-2"
+              >
                 Project Name *
               </label>
               <input
@@ -323,7 +326,10 @@ export default function UploadPage() {
 
             {/* Project Type */}
             <div>
-              <label htmlFor="projectType" className="block text-sm font-medium text-brand-muted mb-2">
+              <label
+                htmlFor="projectType"
+                className="block text-sm font-medium text-brand-muted mb-2"
+              >
                 Project Type *
               </label>
               <select
@@ -361,7 +367,10 @@ export default function UploadPage() {
 
             {/* Contractor */}
             <div>
-              <label htmlFor="contractor" className="block text-sm font-medium text-brand-muted mb-2">
+              <label
+                htmlFor="contractor"
+                className="block text-sm font-medium text-brand-muted mb-2"
+              >
                 Contractor
               </label>
               <input
@@ -376,7 +385,10 @@ export default function UploadPage() {
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-brand-muted mb-2">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-brand-muted mb-2"
+              >
                 Description
               </label>
               <textarea
@@ -451,13 +463,12 @@ export default function UploadPage() {
           {/* File List */}
           {files.length > 0 && (
             <div className="mt-6 space-y-3">
-              <h3 className="text-sm font-medium text-brand-muted">Selected Files ({files.length})</h3>
+              <h3 className="text-sm font-medium text-brand-muted">
+                Selected Files ({files.length})
+              </h3>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {files.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 bg-brand-500 rounded-lg"
-                  >
+                  <div key={index} className="flex items-center gap-3 p-3 bg-brand-500 rounded-lg">
                     {file.type.includes('pdf') ? (
                       <FileText className="w-5 h-5 text-red-400" />
                     ) : (
@@ -581,7 +592,9 @@ export default function UploadPage() {
             <>
               <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
               <h2 className="text-xl font-semibold text-brand-text mb-2">Verification Complete!</h2>
-              <p className="text-brand-muted mb-6">{status || 'Redirecting to project details...'}</p>
+              <p className="text-brand-muted mb-6">
+                {status || 'Redirecting to project details...'}
+              </p>
             </>
           )}
         </motion.div>

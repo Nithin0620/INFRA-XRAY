@@ -2,11 +2,21 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Search, Layers, Compass } from 'lucide-react';
+import {
+  MapPin,
+  ArrowRight,
+  Filter,
+  Search,
+  Layers,
+  AlertTriangle,
+  Camera,
+  Compass,
+} from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { fetchProjects } from '../services/api';
 import { formatINR, categoryIcon, riskScoreColor, severityColor } from '../lib/utils';
-import { createProjectIcon } from '../components/ProjectMap';
+import { createProjectIcon, createPhotoIcon } from '../components/ProjectMap';
 
 function MapController({ center, bounds, zoom }) {
   const map = useMap();
@@ -154,7 +164,8 @@ export default function MapView() {
           <Layers className="w-4 h-4 text-brand-400" />
           Showing <span className="text-brand-text font-semibold">
             {filteredProjects.length}
-          </span> of {projects.length} projects
+          </span>{' '}
+          of {projects.length} projects
         </div>
       </motion.div>
 
@@ -299,7 +310,9 @@ export default function MapView() {
             <h2 className="section-title text-base">
               <Compass className="w-4 h-4 text-brand-400" /> Monitored Projects
             </h2>
-            <span className="text-xs text-brand-muted font-mono">{filteredProjects.length} sites</span>
+            <span className="text-xs text-brand-muted font-mono">
+              {filteredProjects.length} sites
+            </span>
           </div>
 
           {filteredProjects.length === 0 ? (
