@@ -389,8 +389,8 @@ export default function UploadPage() {
           >
             <Upload className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <p className="text-gray-400 mb-2">
-              Drag & drop files here, or{' '}
-              <label className="text-brand-400 hover:text-brand-300 cursor-pointer underline focus-within:ring-2 focus-within:ring-brand-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 rounded px-1">
+              Drag & drop files here, or{" "}
+              <label className="text-brand-400 hover:text-brand-300 cursor-pointer underline focus-within:ring-2 focus-within:ring-brand-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 focus-within:outline-none rounded px-0.5">
                 browse
                 <input
                   type="file"
