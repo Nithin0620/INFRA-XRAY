@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -112,7 +113,7 @@ export default function ProjectMap({
   return (
     <div
       style={{ height, width: '100%' }}
-      className="rounded-2xl overflow-hidden border border-white/10 relative z-0"
+      className="rounded-2xl overflow-hidden border border-brand-100 relative z-0"
     >
       <MapContainer
         center={center}
@@ -189,8 +190,12 @@ export default function ProjectMap({
                 <div className="text-gray-600 mt-1">
                   {project.state} · {formatINR(project.sanctioned_amount_inr)}
                 </div>
-                <div className="mt-1.5 flex items-center gap-1 font-semibold" style={{ color: scoreColor }}>
-                  Risk Score: {project.risk_score ?? 'N/A'}/100 ({project.severity_label || 'Assessed'})
+                <div
+                  className="mt-1.5 flex items-center gap-1 font-semibold"
+                  style={{ color: scoreColor }}
+                >
+                  Risk Score: {project.risk_score ?? 'N/A'}/100 (
+                  {project.severity_label || 'Assessed'})
                 </div>
               </div>
             </Popup>
@@ -217,15 +222,13 @@ export default function ProjectMap({
                   <div className="mt-1 flex items-center gap-1 text-[11px]">
                     Condition:{' '}
                     <span
-                      className={`font-semibold ${
-                        isDamaged ? 'text-red-600' : 'text-green-600'
-                      }`}
+                      className={`font-semibold ${isDamaged ? 'text-red-600' : 'text-green-600'}`}
                     >
                       {photo.condition_tag?.replace('_', ' ')}
                     </span>
                   </div>
                   {photo.timestamp && (
-                    <div className="text-[10px] text-gray-500 mt-0.5">
+                    <div className="text-[10px] text-brand-muted mt-0.5">
                       Captured: {new Date(photo.timestamp).toLocaleString()}
                     </div>
                   )}

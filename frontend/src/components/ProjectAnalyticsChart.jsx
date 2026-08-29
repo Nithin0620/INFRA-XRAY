@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import {
   BarChart,
@@ -15,13 +16,13 @@ import { formatINR } from '../lib/utils';
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-gray-900/95 border border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-md text-xs">
-        <div className="font-bold text-gray-200 mb-1">{label}</div>
+      <div className="bg-white/95 border border-brand-100 p-3 rounded-xl shadow-2xl backdrop-blur-md text-xs">
+        <div className="font-bold text-brand-text mb-1">{label}</div>
         {payload.map((item, index) => (
-          <div key={index} className="flex items-center gap-2 text-gray-300">
+          <div key={index} className="flex items-center gap-2 text-brand-text">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
             <span>{item.name}:</span>
-            <span className="font-mono font-semibold text-white">
+            <span className="font-mono font-semibold text-brand-text">
               {item.unit === 'INR' ? formatINR(item.value) : `${item.value} ${item.unit || ''}`}
             </span>
           </div>
@@ -92,10 +93,12 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
       <div className="glass-card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-gray-200">Quantity Verification Funnel</h3>
-            <p className="text-xs text-gray-500">Contracted vs Progress Claimed vs Physical Ground Audit</p>
+            <h3 className="text-sm font-semibold text-brand-text">Quantity Verification Funnel</h3>
+            <p className="text-xs text-brand-muted">
+              Contracted vs Progress Claimed vs Physical Ground Audit
+            </p>
           </div>
-          <span className="text-xs font-mono bg-white/5 px-2.5 py-1 rounded text-gray-300">
+          <span className="text-xs font-mono bg-brand-50 px-2.5 py-1 rounded text-brand-text">
             Unit: {unit}
           </span>
         </div>
@@ -120,10 +123,12 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
       <div className="glass-card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-gray-200">Financial Audit Breakdown</h3>
-            <p className="text-xs text-gray-500">Sanctioned Amount vs BOQ vs Total Billed</p>
+            <h3 className="text-sm font-semibold text-brand-text">Financial Audit Breakdown</h3>
+            <p className="text-xs text-brand-muted">Sanctioned Amount vs BOQ vs Total Billed</p>
           </div>
-          <span className="text-xs font-mono bg-white/5 px-2.5 py-1 rounded text-gray-300">INR (₹)</span>
+          <span className="text-xs font-mono bg-brand-50 px-2.5 py-1 rounded text-brand-text">
+            INR (₹)
+          </span>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">

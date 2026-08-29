@@ -201,7 +201,12 @@ router.post('/:id/process', (req, res) => {
     { name: 'Cross-Verification', script: 'verification/run_verification.py', step: 3, total: 6 },
     { name: 'Computer Vision Analysis', script: 'vision/run_vision_check.py', step: 4, total: 6 },
     { name: 'Geospatial Alignment', script: 'geospatial/run_geo_check.py', step: 5, total: 6 },
-    { name: 'Anomaly Engine & Risk Scoring', script: 'anomaly/run_anomaly_engine.py', step: 6, total: 6 },
+    {
+      name: 'Anomaly Engine & Risk Scoring',
+      script: 'anomaly/run_anomaly_engine.py',
+      step: 6,
+      total: 6,
+    },
   ];
 
   broadcastProgress(projectId, {

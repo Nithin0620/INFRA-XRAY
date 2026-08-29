@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -103,7 +104,7 @@ export default function MapView() {
         <h1 className="text-3xl font-bold tracking-tight">
           Geographic <span className="text-brand-400">Risk</span> Overview
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-brand-muted mt-1">
           Interactive geospatial verification of all government infrastructure tenders across India
         </p>
       </motion.div>
@@ -118,26 +119,26 @@ export default function MapView() {
         <div className="flex flex-wrap items-center gap-3">
           {/* Search */}
           <div className="relative">
-            <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-brand-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search project, state..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-black/30 border border-white/10 rounded-xl pl-9 pr-4 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-500/50"
+              className="bg-white/30 border border-brand-100 rounded-xl pl-9 pr-4 py-1.5 text-xs text-brand-text placeholder-gray-500 focus:outline-none focus:border-brand-500/50"
             />
           </div>
 
           {/* Severity Filter */}
-          <div className="flex items-center gap-1 bg-black/30 p-1 rounded-xl border border-white/10 text-xs">
+          <div className="flex items-center gap-1 bg-white/30 p-1 rounded-xl border border-brand-100 text-xs">
             {['ALL', 'CRITICAL', 'HIGH', 'CLEAN'].map((lvl) => (
               <button
                 key={lvl}
                 onClick={() => setSeverityFilter(lvl)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   severityFilter === lvl
-                    ? 'bg-brand-600 text-white shadow'
-                    : 'text-gray-400 hover:text-gray-200'
+                    ? 'bg-brand-600 text-brand-text shadow'
+                    : 'text-brand-muted hover:text-brand-text'
                 }`}
               >
                 {lvl}
@@ -149,7 +150,7 @@ export default function MapView() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="bg-black/30 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-brand-500/50"
+            className="bg-white/30 border border-brand-100 rounded-xl px-3 py-1.5 text-xs text-brand-text focus:outline-none focus:border-brand-500/50"
           >
             <option value="ALL">All Categories</option>
             <option value="road">Roads</option>
@@ -159,10 +160,11 @@ export default function MapView() {
           </select>
         </div>
 
-        <div className="text-xs text-gray-500 flex items-center gap-1.5">
+        <div className="text-xs text-brand-muted flex items-center gap-1.5">
           <Layers className="w-4 h-4 text-brand-400" />
-          Showing <span className="text-gray-300 font-semibold">{filteredProjects.length}</span> of{' '}
-          {projects.length} projects
+          Showing <span className="text-brand-text font-semibold">
+            {filteredProjects.length}
+          </span> of {projects.length} projects
         </div>
       </motion.div>
 
@@ -264,7 +266,7 @@ export default function MapView() {
 
           {/* Quick Overlay Footer */}
           {selected && (
-            <div className="absolute bottom-3 left-3 right-3 z-10 glass-card p-3 flex items-center justify-between backdrop-blur-xl border border-white/10">
+            <div className="absolute bottom-3 left-3 right-3 z-10 glass-card p-3 flex items-center justify-between backdrop-blur-xl border border-brand-100">
               <div className="flex items-center gap-3">
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs"
@@ -277,10 +279,10 @@ export default function MapView() {
                   {selected.risk_score ?? '—'}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-gray-200 line-clamp-1">
+                  <div className="text-sm font-semibold text-brand-text line-clamp-1">
                     {selected.project_name}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-brand-muted">
                     {selected.state} · {formatINR(selected.sanctioned_amount_inr)} ·{' '}
                     {selected.sanctioned_quantity} {selected.unit}
                   </div>
@@ -288,7 +290,7 @@ export default function MapView() {
               </div>
               <Link
                 to={`/project/${selected.project_id}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-medium transition-colors shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-brand-text text-xs font-medium transition-colors shrink-0"
               >
                 Inspect Details <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -307,13 +309,11 @@ export default function MapView() {
             <h2 className="section-title text-base">
               <Compass className="w-4 h-4 text-brand-400" /> Monitored Projects
             </h2>
-            <span className="text-xs text-gray-500 font-mono">
-              {filteredProjects.length} sites
-            </span>
+            <span className="text-xs text-brand-muted font-mono">{filteredProjects.length} sites</span>
           </div>
 
           {filteredProjects.length === 0 ? (
-            <div className="glass-card p-6 text-center text-xs text-gray-500">
+            <div className="glass-card p-6 text-center text-xs text-brand-muted">
               No projects matching selected filters.
             </div>
           ) : (
@@ -326,16 +326,18 @@ export default function MapView() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 + i * 0.04 }}
                   className={`glass-card p-4 cursor-pointer transition-all hover:bg-white/[0.05] ${
-                    isSelected ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10' : ''
+                    isSelected
+                      ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10'
+                      : ''
                   }`}
                   onClick={() => setSelected(p)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium text-gray-200 flex items-center gap-1.5 line-clamp-1">
+                      <div className="text-sm font-medium text-brand-text flex items-center gap-1.5 line-clamp-1">
                         {categoryIcon(p.category)} {p.project_name}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="text-xs text-brand-muted mt-1">
                         {p.state} · {formatINR(p.sanctioned_amount_inr)}
                       </div>
                     </div>
@@ -370,4 +372,3 @@ export default function MapView() {
     </div>
   );
 }
-

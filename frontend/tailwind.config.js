@@ -1,11 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Geist', 'sans-serif'],
+        display: ['Special Elite', 'serif'],
+      },
       colors: {
         brand: {
+          dark: '#0a0a0a',
+          text: '#1a1a1a',
+          muted: '#767676',
+          accent: '#905831', // terracotta / warm earthy brown
+          surface: '#fafafa',
+          // keep some of old colors so things don't break immediately before we get to index.css
           50: "#eef2ff",
           100: "#e0e7ff",
           200: "#c7d2fe",
@@ -24,11 +33,7 @@ export default {
           red: "#dc2626",
           critical: "#991b1b",
         },
-      },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
-      },
+      }
     },
   },
   plugins: [],

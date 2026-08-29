@@ -54,7 +54,7 @@ export default function Dashboard() {
       <div className="page-container flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Loading projects...</p>
+          <p className="text-sm text-brand-muted">Loading projects...</p>
         </div>
       </div>
     );
@@ -67,7 +67,7 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold tracking-tight">
           Infrastructure <span className="text-brand-400">Verification</span> Dashboard
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-brand-muted mt-1">
           AI-powered cross-verification of government infrastructure projects
         </p>
       </motion.div>
@@ -138,8 +138,8 @@ export default function Dashboard() {
           className="glass-card p-5 lg:col-span-1 flex flex-col justify-between"
         >
           <div className="mb-2">
-            <h3 className="text-sm font-semibold text-gray-200">Portfolio Risk Distribution</h3>
-            <p className="text-xs text-gray-500">Tenders categorized by severity level</p>
+            <h3 className="text-sm font-semibold text-brand-text">Portfolio Risk Distribution</h3>
+            <p className="text-xs text-brand-muted">Tenders categorized by severity level</p>
           </div>
           <div className="h-52 w-full flex items-center justify-center">
             {/* Severity Distribution */}
@@ -153,13 +153,17 @@ export default function Dashboard() {
                 },
                 {
                   label: 'High Risk (46-70)',
-                  count: projects.filter((p) => (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71).length,
+                  count: projects.filter(
+                    (p) => (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71
+                  ).length,
                   color: 'bg-orange-500',
                   textColor: 'text-orange-400',
                 },
                 {
                   label: 'Moderate Risk (21-45)',
-                  count: projects.filter((p) => (p.risk_score || 0) >= 21 && (p.risk_score || 0) < 46).length,
+                  count: projects.filter(
+                    (p) => (p.risk_score || 0) >= 21 && (p.risk_score || 0) < 46
+                  ).length,
                   color: 'bg-yellow-500',
                   textColor: 'text-yellow-400',
                 },
@@ -172,9 +176,10 @@ export default function Dashboard() {
               ].map((item) => (
                 <div key={item.label}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-400">{item.label}</span>
+                    <span className="text-brand-muted">{item.label}</span>
                     <span className={`font-bold font-mono ${item.textColor}`}>
-                      {item.count} ({projects.length ? Math.round((item.count / projects.length) * 100) : 0}%)
+                      {item.count} (
+                      {projects.length ? Math.round((item.count / projects.length) * 100) : 0}%)
                     </span>
                   </div>
                   <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
@@ -200,10 +205,14 @@ export default function Dashboard() {
         >
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-sm font-semibold text-gray-200">Sanctioned Value vs Risk Severity</h3>
-              <p className="text-xs text-gray-500">Comparing financial exposure against verified risk</p>
+              <h3 className="text-sm font-semibold text-brand-text">
+                Sanctioned Value vs Risk Severity
+              </h3>
+              <p className="text-xs text-brand-muted">
+                Comparing financial exposure against verified risk
+              </p>
             </div>
-            <span className="text-[11px] text-gray-400 bg-white/5 px-2 py-1 rounded">
+            <span className="text-[11px] text-brand-muted bg-brand-50 px-2 py-1 rounded">
               High Risk = Immediate Audit Required
             </span>
           </div>
@@ -212,7 +221,10 @@ export default function Dashboard() {
             <div className="h-full flex items-end gap-3 pt-6 pb-2 px-2 overflow-x-auto">
               {projects.map((p) => {
                 const maxVal = Math.max(...projects.map((x) => x.sanctioned_amount_inr || 1));
-                const heightPercent = Math.max(15, Math.round(((p.sanctioned_amount_inr || 0) / maxVal) * 100));
+                const heightPercent = Math.max(
+                  15,
+                  Math.round(((p.sanctioned_amount_inr || 0) / maxVal) * 100)
+                );
                 const isCrit = (p.risk_score || 0) >= 71;
                 const isHigh = (p.risk_score || 0) >= 46 && (p.risk_score || 0) < 71;
 
@@ -222,10 +234,10 @@ export default function Dashboard() {
                     to={`/project/${p.project_id}`}
                     className="flex-1 min-w-[70px] flex flex-col items-center gap-2 group cursor-pointer"
                   >
-                    <span className="text-[10px] font-mono text-gray-400 group-hover:text-white transition-colors">
+                    <span className="text-[10px] font-mono text-brand-muted group-hover:text-brand-text transition-colors">
                       {formatINR(p.sanctioned_amount_inr)}
                     </span>
-                    <div className="w-full bg-gray-900 rounded-t-lg overflow-hidden flex items-end h-28 border border-white/5 group-hover:border-white/20 transition-all">
+                    <div className="w-full bg-white rounded-t-lg overflow-hidden flex items-end h-28 border border-brand-50 group-hover:border-white/20 transition-all">
                       <div
                         className={`w-full rounded-t transition-all duration-500 ${
                           isCrit
@@ -238,7 +250,7 @@ export default function Dashboard() {
                       />
                     </div>
                     <div className="text-center">
-                      <div className="text-[11px] font-bold text-gray-300 truncate max-w-[75px]">
+                      <div className="text-[11px] font-bold text-brand-text truncate max-w-[75px]">
                         {p.project_id}
                       </div>
                       <div
@@ -263,13 +275,13 @@ export default function Dashboard() {
         transition={{ delay: 0.3 }}
         className="glass-card overflow-hidden"
       >
-        <div className="p-5 border-b border-white/5">
+        <div className="p-5 border-b border-brand-50">
           <h2 className="section-title">Projects</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-gray-500 text-xs uppercase tracking-wider">
+              <tr className="border-b border-brand-50 text-brand-muted text-xs uppercase tracking-wider">
                 {[
                   { key: 'project_name', label: 'Project' },
                   { key: 'state', label: 'State' },
@@ -281,7 +293,7 @@ export default function Dashboard() {
                   <th
                     key={key}
                     onClick={() => handleSort(key)}
-                    className="px-5 py-3 text-left cursor-pointer hover:text-gray-300 transition-colors select-none"
+                    className="px-5 py-3 text-left cursor-pointer hover:text-brand-text transition-colors select-none"
                   >
                     {label}
                     {sortKey === key && (
@@ -307,21 +319,21 @@ export default function Dashboard() {
                       <div>
                         <Link
                           to={`/project/${p.project_id}`}
-                          className="font-medium text-gray-200 hover:text-brand-400 transition-colors line-clamp-1"
+                          className="font-medium text-brand-text hover:text-brand-400 transition-colors line-clamp-1"
                         >
                           {p.project_name}
                         </Link>
-                        <div className="text-xs text-gray-500 font-mono">{p.tender_id}</div>
+                        <div className="text-xs text-brand-muted font-mono">{p.tender_id}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-gray-400">{p.state}</td>
+                  <td className="px-5 py-4 text-brand-muted">{p.state}</td>
                   <td className="px-5 py-4">
-                    <span className="text-xs bg-white/5 px-2 py-1 rounded-full text-gray-300 capitalize">
+                    <span className="text-xs bg-brand-50 px-2 py-1 rounded-full text-brand-text capitalize">
                       {p.category}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-gray-300 font-medium">
+                  <td className="px-5 py-4 text-brand-text font-medium">
                     {formatINR(p.sanctioned_amount_inr)}
                   </td>
                   <td className="px-5 py-4">
@@ -342,7 +354,7 @@ export default function Dashboard() {
                           }}
                         />
                       </div>
-                      <span className="text-sm font-mono text-gray-400">{p.risk_score ?? '—'}</span>
+                      <span className="text-sm font-mono text-brand-muted">{p.risk_score ?? '—'}</span>
                     </div>
                   </td>
                   <td className="px-5 py-4">
@@ -351,7 +363,7 @@ export default function Dashboard() {
                   <td className="px-5 py-4">
                     <Link
                       to={`/project/${p.project_id}`}
-                      className="text-gray-500 hover:text-brand-400 transition-colors focus-visible:ring-2 focus-visible:outline-none rounded"
+                      className="text-brand-muted hover:text-brand-400 transition-colors focus-visible:ring-2 focus-visible:outline-none rounded"
                       aria-label={`View details for ${p.project_name}`}
                       title={`View details for ${p.project_name}`}
                     >

@@ -11,5 +11,8 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "setup": "cd backend && pnpm install && cd ../frontend && pnpm install"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }
