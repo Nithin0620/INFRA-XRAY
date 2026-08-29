@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
-import { riskScoreColor } from "../lib/utils";
+import { motion } from 'framer-motion';
+import { riskScoreColor } from '../lib/utils';
 
-export default function RiskGauge({ score = 0, severity = "Low", size = 180 }) {
+export default function RiskGauge({ score = 0, severity = 'Low', size = 180 }) {
   const radius = (size - 20) / 2;
   const circumference = Math.PI * radius; // half circle
   const progress = (score / 100) * circumference;
@@ -10,11 +10,7 @@ export default function RiskGauge({ score = 0, severity = "Low", size = 180 }) {
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="relative" style={{ width: size, height: size / 2 + 20 }}>
-        <svg
-          width={size}
-          height={size / 2 + 20}
-          viewBox={`0 0 ${size} ${size / 2 + 20}`}
-        >
+        <svg width={size} height={size / 2 + 20} viewBox={`0 0 ${size} ${size / 2 + 20}`}>
           {/* Background arc */}
           <path
             d={`M 10 ${size / 2 + 10} A ${radius} ${radius} 0 0 1 ${size - 10} ${size / 2 + 10}`}
@@ -33,7 +29,7 @@ export default function RiskGauge({ score = 0, severity = "Low", size = 180 }) {
             strokeDasharray={`${circumference}`}
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: circumference - progress }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
             style={{ filter: `drop-shadow(0 0 8px ${color}40)` }}
           />
         </svg>

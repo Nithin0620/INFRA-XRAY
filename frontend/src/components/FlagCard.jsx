@@ -1,13 +1,5 @@
-import { severityBadgeClass, cn } from "../lib/utils";
-import {
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Eye,
-  MapPin,
-  BarChart3,
-  Brain,
-} from "lucide-react";
+import { severityBadgeClass, cn } from '../lib/utils';
+import { AlertTriangle, CheckCircle, XCircle, Eye, MapPin, BarChart3, Brain } from 'lucide-react';
 
 const moduleIcons = {
   cross_verification: BarChart3,
@@ -17,10 +9,10 @@ const moduleIcons = {
 };
 
 const moduleLabels = {
-  cross_verification: "Cross-Verification",
-  computer_vision: "Computer Vision",
-  geospatial: "Geospatial",
-  ml_anomaly: "ML Anomaly",
+  cross_verification: 'Cross-Verification',
+  computer_vision: 'Computer Vision',
+  geospatial: 'Geospatial',
+  ml_anomaly: 'ML Anomaly',
 };
 
 export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
@@ -29,9 +21,9 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
   return (
     <div
       className={cn(
-        "glass-card p-5 transition-all",
-        flag.severity === "red" && "border-red-500/20 bg-red-500/[0.03]",
-        flag.severity === "yellow" && "border-yellow-500/20 bg-yellow-500/[0.03]"
+        'glass-card p-5 transition-all',
+        flag.severity === 'red' && 'border-red-500/20 bg-red-500/[0.03]',
+        flag.severity === 'yellow' && 'border-yellow-500/20 bg-yellow-500/[0.03]'
       )}
     >
       <div className="flex items-start justify-between gap-4">
@@ -39,9 +31,9 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
           {/* Header */}
           <div className="flex items-center gap-3 mb-2">
             <span className={severityBadgeClass(flag.severity)}>
-              {flag.severity === "red" ? (
+              {flag.severity === 'red' ? (
                 <XCircle className="w-3 h-3" />
-              ) : flag.severity === "yellow" ? (
+              ) : flag.severity === 'yellow' ? (
                 <AlertTriangle className="w-3 h-3" />
               ) : (
                 <CheckCircle className="w-3 h-3" />
@@ -63,14 +55,14 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
           {/* Deviation */}
           {flag.deviation_percent != null && (
             <div className="mt-2 text-xs text-gray-500">
-              Deviation:{" "}
+              Deviation:{' '}
               <span
                 className={
                   flag.deviation_percent > 10
-                    ? "text-red-400 font-semibold"
+                    ? 'text-red-400 font-semibold'
                     : flag.deviation_percent > 5
-                    ? "text-yellow-400 font-semibold"
-                    : "text-green-400"
+                      ? 'text-yellow-400 font-semibold'
+                      : 'text-green-400'
                 }
               >
                 {flag.deviation_percent.toFixed(1)}%
@@ -86,7 +78,7 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
                   key={doc}
                   className="text-[10px] font-mono bg-white/5 text-gray-400 px-2 py-0.5 rounded"
                 >
-                  {doc.split("/").pop()}
+                  {doc.split('/').pop()}
                 </span>
               ))}
             </div>
@@ -103,14 +95,14 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
             ) : (
               <>
                 <button
-                  onClick={() => onFeedback(flag.flag_id, "confirmed")}
+                  onClick={() => onFeedback(flag.flag_id, 'confirmed')}
                   className="text-[10px] px-2 py-1 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors focus-visible:ring-2 focus-visible:outline-none"
                   aria-label="Confirm flag"
                 >
                   Confirm
                 </button>
                 <button
-                  onClick={() => onFeedback(flag.flag_id, "false_positive")}
+                  onClick={() => onFeedback(flag.flag_id, 'false_positive')}
                   className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors focus-visible:ring-2 focus-visible:outline-none"
                   aria-label="Mark flag as false positive"
                 >
