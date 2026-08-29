@@ -1,11 +1,11 @@
-import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, Map, Info, Search, Upload } from "lucide-react";
+import { Outlet, NavLink } from 'react-router-dom';
+import { LayoutDashboard, Map, Info, Search, Upload } from 'lucide-react';
 
 const navItems = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/upload", label: "Upload", icon: Upload },
-  { to: "/map", label: "Map View", icon: Map },
-  { to: "/about", label: "About", icon: Info },
+  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/upload', label: 'Upload', icon: Upload },
+  { to: '/map', label: 'Map View', icon: Map },
+  { to: '/about', label: 'About', icon: Info },
 ];
 
 export default function Layout() {
@@ -35,14 +35,14 @@ export default function Layout() {
               <NavLink
                 key={to}
                 to={to}
-                end={to === "/"}
+                end={to === '/'}
                 aria-label={label}
                 title={label}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-white/10 text-white shadow-inner"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                      ? 'bg-white/10 text-white shadow-inner'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`
                 }
               >

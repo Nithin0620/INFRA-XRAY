@@ -38,9 +38,8 @@ jobs:
     - name: Install dependencies
       run: pnpm run setup
 
-    # Add lint scripts if they exist in the future
-    # - name: Run frontend linter
-    #   run: cd frontend && pnpm run lint
+    - name: Run frontend linter
+      run: cd frontend && pnpm run lint
 
-    # - name: Run backend linter
-    #   run: cd backend && pnpm run lint
+    - name: Run backend linter
+      run: cd backend && pnpm run lint

@@ -4,6 +4,8 @@
   "private": true,
   "description": "INFRA-XRAY — AI-Powered Infrastructure Evidence Verification Platform",
   "scripts": {
+    "lint": "cd frontend && pnpm run lint && cd ../backend && pnpm run lint",
+    "format": "cd frontend && pnpm run format && cd ../backend && pnpm run format",
     "generate-data": "cd scripts && node generate_synthetic_data.js",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
