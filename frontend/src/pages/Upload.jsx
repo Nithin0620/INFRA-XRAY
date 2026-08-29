@@ -264,8 +264,11 @@ export default function UploadPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Project Name */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-400 mb-2">Project Name *</label>
+              <label htmlFor="projectName" className="block text-sm font-medium text-gray-400 mb-2">
+                Project Name *
+              </label>
               <input
+                id="projectName"
                 type="text"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
@@ -276,8 +279,11 @@ export default function UploadPage() {
 
             {/* Project Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Project Type *</label>
+              <label htmlFor="projectType" className="block text-sm font-medium text-gray-400 mb-2">
+                Project Type *
+              </label>
               <select
+                id="projectType"
                 value={projectType}
                 onChange={(e) => setProjectType(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-xl text-gray-200 focus:outline-none focus:border-brand-500/50 transition-colors"
@@ -292,8 +298,11 @@ export default function UploadPage() {
 
             {/* State */}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">State *</label>
+              <label htmlFor="state" className="block text-sm font-medium text-gray-400 mb-2">
+                State *
+              </label>
               <select
+                id="state"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-900/50 border border-white/10 rounded-xl text-gray-200 focus:outline-none focus:border-brand-500/50 transition-colors"
@@ -308,8 +317,11 @@ export default function UploadPage() {
 
             {/* Contractor */}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Contractor</label>
+              <label htmlFor="contractor" className="block text-sm font-medium text-gray-400 mb-2">
+                Contractor
+              </label>
               <input
+                id="contractor"
                 type="text"
                 value={contractor}
                 onChange={(e) => setContractor(e.target.value)}
@@ -320,8 +332,11 @@ export default function UploadPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Description</label>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-400 mb-2">
+                Description
+              </label>
               <textarea
+                id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of the project..."

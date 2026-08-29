@@ -1,0 +1,13 @@
+
+> infra-xray@1.0.0 dev:frontend
+> cd frontend && npm run dev
+
+
+> infra-xray-frontend@1.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 282 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
