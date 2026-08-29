@@ -40,21 +40,21 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
               )}
               {flag.severity}
             </span>
-            <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-white/5 rounded-full px-2.5 py-0.5">
+            <span className="inline-flex items-center gap-1.5 text-xs text-brand-muted bg-brand-50 rounded-full px-2.5 py-0.5">
               <Icon className="w-3 h-3" />
               {moduleLabels[flag.source_module] || flag.source_module}
             </span>
             {flag.category && (
-              <span className="text-xs text-gray-500 font-mono">{flag.category}</span>
+              <span className="text-xs text-brand-muted font-mono">{flag.category}</span>
             )}
           </div>
 
           {/* Message */}
-          <p className="text-sm text-gray-300 leading-relaxed">{flag.message}</p>
+          <p className="text-sm text-brand-text leading-relaxed">{flag.message}</p>
 
           {/* Deviation */}
           {flag.deviation_percent != null && (
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-brand-muted">
               Deviation:{' '}
               <span
                 className={
@@ -76,7 +76,7 @@ export default function FlagCard({ flag, onFeedback, feedbackStatus }) {
               {flag.documents_involved.map((doc) => (
                 <span
                   key={doc}
-                  className="text-[10px] font-mono bg-white/5 text-gray-400 px-2 py-0.5 rounded"
+                  className="text-[10px] font-mono bg-brand-50 text-brand-muted px-2 py-0.5 rounded"
                 >
                   {doc.split('/').pop()}
                 </span>

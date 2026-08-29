@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useMemo } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, Handle, Position, MarkerType } from 'reactflow';
 import dagre from '@dagrejs/dagre';
@@ -10,6 +11,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   AlertCircle,
+  ExternalLink,
 } from 'lucide-react';
 import { formatINR } from '../lib/utils';
 
@@ -57,7 +59,7 @@ const DocumentNode = ({ data }) => {
       className={`rounded-xl border p-3.5 shadow-xl backdrop-blur-md transition-all duration-300 w-[240px] text-left cursor-pointer ${
         isFlagged
           ? 'bg-red-950/40 border-red-500/50 shadow-red-500/10 hover:border-red-400'
-          : 'bg-gray-900/80 border-white/10 shadow-black/40 hover:border-brand-500/50'
+          : 'bg-white/80 border-brand-100 shadow-black/40 hover:border-brand-500/50'
       }`}
     >
       <Handle type="target" position={Position.Left} className="!bg-brand-400 !w-2 !h-2" />
@@ -71,10 +73,10 @@ const DocumentNode = ({ data }) => {
             <Icon className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-xs font-bold text-gray-200 truncate max-w-[130px]">
+            <div className="text-xs font-bold text-brand-text truncate max-w-[130px]">
               {data.label}
             </div>
-            <div className="text-[10px] text-gray-500 font-mono truncate">{data.sourceFile}</div>
+            <div className="text-[10px] text-brand-muted font-mono truncate">{data.sourceFile}</div>
           </div>
         </div>
         {isFlagged ? (
@@ -84,12 +86,12 @@ const DocumentNode = ({ data }) => {
         )}
       </div>
 
-      <div className="mt-2 text-xs font-semibold text-gray-100 bg-black/30 px-2 py-1 rounded border border-white/5 truncate">
+      <div className="mt-2 text-xs font-semibold text-brand-text bg-white/30 px-2 py-1 rounded border border-brand-50 truncate">
         {data.value}
       </div>
 
       {data.subtext && (
-        <div className="mt-1 text-[11px] text-gray-400 truncate">{data.subtext}</div>
+        <div className="mt-1 text-[11px] text-brand-muted truncate">{data.subtext}</div>
       )}
       <Handle type="source" position={Position.Right} className="!bg-brand-400 !w-2 !h-2" />
     </div>
@@ -326,9 +328,9 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
   }, [project, extracted, flags]);
 
   return (
-    <div className="w-full h-[460px] rounded-2xl overflow-hidden border border-white/10 bg-gray-950/60 relative">
+    <div className="w-full h-[460px] rounded-2xl overflow-hidden border border-brand-100 bg-brand-surface/60 relative">
       <div className="absolute top-3 left-4 z-10 flex items-center gap-2 pointer-events-none">
-        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider bg-black/60 px-2.5 py-1 rounded-full border border-white/10 backdrop-blur-md">
+        <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider bg-white/60 px-2.5 py-1 rounded-full border border-brand-100 backdrop-blur-md">
           Interactive Evidence Traceability Graph
         </span>
       </div>
@@ -342,10 +344,10 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
         className="react-flow-dark"
       >
         <Background color="#374151" gap={20} size={1} />
-        <Controls className="!bg-gray-900 !border-white/10 !text-gray-200 !rounded-xl !shadow-xl" />
+        <Controls className="!bg-white !border-brand-100 !text-brand-text !rounded-xl !shadow-xl" />
         <MiniMap
           nodeColor={(node) => (node.data?.hasFlag ? '#ef4444' : '#3b82f6')}
-          className="!bg-gray-900/90 !border !border-white/10 !rounded-xl overflow-hidden"
+          className="!bg-white/90 !border !border-brand-100 !rounded-xl overflow-hidden"
           maskColor="rgba(0, 0, 0, 0.7)"
         />
       </ReactFlow>

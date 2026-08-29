@@ -44,7 +44,7 @@ export default function RiskGauge({ score = 0, severity = 'Low', size = 180 }) {
           >
             {score}
           </motion.span>
-          <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+          <span className="text-xs text-brand-muted font-medium uppercase tracking-wider">
             {severity}
           </span>
         </div>

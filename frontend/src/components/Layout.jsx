@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Info, Search, Upload } from 'lucide-react';
+import { LayoutDashboard, Map, Info, Upload } from 'lucide-react';
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -10,44 +10,37 @@ const navItems = [
 
 export default function Layout() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Readability Gradient */}
+      <div className="readability-gradient z-0"></div>
+
       {/* Top Nav */}
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-gray-950/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <header className="sticky top-0 z-50 bg-brand-500 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-shadow">
-              <Search className="w-5 h-5 text-white" />
-            </div>
+          <NavLink
+            to="/"
+            className="flex items-center gap-3 group transition-transform hover:scale-105 active:scale-95"
+          >
             <div>
-              <span className="text-base font-bold tracking-tight text-white">
-                INFRA<span className="text-brand-400">XRAY</span>
-              </span>
-              <span className="hidden sm:block text-[10px] text-gray-500 -mt-0.5 tracking-widest uppercase">
-                Evidence Verification
+              <span className="brand-logo text-brand-dark">
+                INFRA<span className="text-brand-accent">XRAY</span>
               </span>
             </div>
           </NavLink>
 
           {/* Nav */}
-          <nav className="flex items-center gap-1">
-            {navItems.map(({ to, label, icon: Icon }) => (
+          <nav className="flex items-center gap-6">
+            {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/'}
                 aria-label={label}
                 title={label}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-white/10 text-white shadow-inner'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`
-                }
+                className={({ isActive }) => `nav-link ${isActive ? 'opacity-55' : ''}`}
               >
-                <Icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{label}</span>
+                {label}
               </NavLink>
             ))}
           </nav>
@@ -55,12 +48,12 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <Outlet />
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-6 text-center text-xs text-gray-600">
+      <footer className="py-8 text-center text-sm text-brand-muted relative z-10 font-sans font-medium">
         INFRA-XRAY — AI-Powered Infrastructure Evidence Verification
       </footer>
     </div>

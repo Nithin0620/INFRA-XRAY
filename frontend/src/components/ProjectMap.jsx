@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { riskScoreColor, formatINR } from '../lib/utils';
-import { Camera } from 'lucide-react';
+import { categoryIcon, riskScoreColor, formatINR } from '../lib/utils';
+import { Camera, AlertCircle, CheckCircle } from 'lucide-react';
 
 // Custom DivIcon for Project Markers
 export function createProjectIcon(score, isSelected = false) {
@@ -112,7 +113,7 @@ export default function ProjectMap({
   return (
     <div
       style={{ height, width: '100%' }}
-      className="rounded-2xl overflow-hidden border border-white/10 relative z-0"
+      className="rounded-2xl overflow-hidden border border-brand-100 relative z-0"
     >
       <MapContainer
         center={center}
@@ -227,7 +228,7 @@ export default function ProjectMap({
                     </span>
                   </div>
                   {photo.timestamp && (
-                    <div className="text-[10px] text-gray-500 mt-0.5">
+                    <div className="text-[10px] text-brand-muted mt-0.5">
                       Captured: {new Date(photo.timestamp).toLocaleString()}
                     </div>
                   )}
