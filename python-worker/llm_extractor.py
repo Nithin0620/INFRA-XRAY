@@ -49,21 +49,14 @@ SCHEMAS = {
 
 
 def extract_with_llm(raw_text: str, doc_type: str) -> dict | None:
-    """Call Anthropic Claude for structured extraction. Returns None if no API key."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key or api_key == "your_key_here":
-        return None
-
-    try:
-        import anthropic
-    except ImportError:
-        return None
+    """Call Groq or Anthropic Claude for structured extraction. Returns None if no API key."""
+    groq_api_key = os.environ.get("GROQ_API_KEY")
+    anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY")
 
     schema_info = SCHEMAS.get(doc_type)
     if not schema_info:
         return None
 
-    client = anthropic.Anthropic(api_key=api_key)
     prompt = f"""Extract structured data from this government infrastructure document.
 
 Document type: {doc_type}
@@ -76,21 +69,44 @@ Raw text:
 
 Return ONLY valid JSON matching the expected fields. No markdown fences, no preamble."""
 
-    try:
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1024,
-            system=schema_info["system"],
-            messages=[{"role": "user", "content": prompt}],
-        )
-        text = response.content[0].text.strip()
-        # Strip accidental markdown fences
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-        return json.loads(text)
-    except Exception as e:
-        print(f"    LLM extraction failed: {e}")
-        return None
+    # 1. Try Groq first if GROQ_API_KEY is available
+    if groq_api_key and groq_api_key != "your_key_here":
+        try:
+            from groq import Groq
+            client = Groq(api_key=groq_api_key)
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": schema_info["system"]},
+                    {"role": "user", "content": prompt},
+                ],
+                model="llama-3.3-70b-versatile",
+                temperature=0.1,
+                response_format={"type": "json_object"},
+            )
+            text = chat_completion.choices[0].message.content.strip()
+            return json.loads(text)
+        except Exception as e:
+            print(f"    Groq extraction failed: {e}")
+
+    # 2. Fallback to Anthropic Claude if available
+    if anthropic_api_key and anthropic_api_key != "your_key_here":
+        try:
+            import anthropic
+            client = anthropic.Anthropic(api_key=anthropic_api_key)
+            response = client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=1024,
+                system=schema_info["system"],
+                messages=[{"role": "user", "content": prompt}],
+            )
+            text = response.content[0].text.strip()
+            text = re.sub(r"^```(?:json)?\s*", "", text)
+            text = re.sub(r"\s*```$", "", text)
+            return json.loads(text)
+        except Exception as e:
+            print(f"    Anthropic extraction failed: {e}")
+
+    return None
 
 
 # ─── Regex fallback for synthetic PDFs ───

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { readJSON } = require('../services/data.service');
+const Groq = require('groq-sdk');
 const Anthropic = require('@anthropic-ai/sdk');
 
 // POST /api/copilot/:projectId/checklist — generate inspection checklist
@@ -37,11 +38,7 @@ router.post('/:projectId/checklist', async (req, res) => {
       'Low-to-medium risk — continue dashboard monitoring with periodic review.';
   }
 
-  // If Anthropic API Key is available, use Claude to generate intelligent copilot audit recommendations
-  if (process.env.ANTHROPIC_API_KEY) {
-    try {
-      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-      const prompt = `You are the lead AI Infrastructure Auditor for INFRA-XRAY.
+  const prompt = `You are the lead AI Infrastructure Auditor for INFRA-XRAY.
 Analyze the following infrastructure project audit data and generate a structured field inspection action plan for human auditors.
 
 Project Information:
@@ -75,6 +72,47 @@ Respond with strict JSON adhering to this schema:
   ]
 }`;
 
+  // 1. If GROQ_API_KEY is available, use ultra-fast Groq LLM (llama-3.3-70b-versatile)
+  if (process.env.GROQ_API_KEY) {
+    try {
+      const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert infrastructure auditor. Return valid JSON only.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.2,
+        response_format: { type: 'json_object' },
+      });
+
+      const text = chatCompletion.choices[0]?.message?.content?.trim();
+      const parsed = JSON.parse(text);
+      return res.json({
+        project_id: projectId,
+        llm_generated: true,
+        llm_provider: 'Groq (llama-3.3-70b-versatile)',
+        sampling_strategy: parsed.sampling_strategy || sampling_strategy,
+        sampling_explanation: parsed.sampling_explanation || sampling_explanation,
+        contractor_inquiries: parsed.contractor_inquiries || [],
+        gps_focus_areas: parsed.gps_focus_areas || [],
+        checklist: parsed.checklist || [],
+      });
+    } catch (groqErr) {
+      console.warn('Groq Copilot call failed, trying fallback:', groqErr.message);
+    }
+  }
+
+  // 2. If ANTHROPIC_API_KEY is available, use Claude
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
       const response = await anthropic.messages.create({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1500,
@@ -88,6 +126,7 @@ Respond with strict JSON adhering to this schema:
         return res.json({
           project_id: projectId,
           llm_generated: true,
+          llm_provider: 'Anthropic (Claude 3.5 Sonnet)',
           sampling_strategy: parsed.sampling_strategy || sampling_strategy,
           sampling_explanation: parsed.sampling_explanation || sampling_explanation,
           contractor_inquiries: parsed.contractor_inquiries || [],

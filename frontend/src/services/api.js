@@ -1,9 +1,58 @@
 import axios from 'axios';
 
+// Resolve API base URL:
+// 1. If VITE_API_URL is provided in .env / Cloudflare, use it (e.g., https://infra-xray.onrender.com)
+// 2. If running locally in development and no .env is set, fallback to http://localhost:3001/api (or /api via Vite proxy)
+const rawBaseUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+const BASE_URL = rawBaseUrl
+  ? `${rawBaseUrl.replace(/\/+$/, '')}/api`
+  : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 10000,
+  baseURL: BASE_URL,
+  timeout: 90000, // 90s timeout to allow Render free tier to spin up
 });
+
+// Cold-start / pending request tracker listeners
+let activeRequests = 0;
+const listeners = new Set();
+
+function notifyListeners() {
+  listeners.forEach((fn) => fn(activeRequests));
+}
+
+export function subscribeToApiActivity(callback) {
+  listeners.add(callback);
+  callback(activeRequests);
+  return () => listeners.delete(callback);
+}
+
+// Axios Interceptors for request activity tracking
+api.interceptors.request.use(
+  (config) => {
+    activeRequests += 1;
+    notifyListeners();
+    return config;
+  },
+  (error) => {
+    activeRequests = Math.max(0, activeRequests - 1);
+    notifyListeners();
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    activeRequests = Math.max(0, activeRequests - 1);
+    notifyListeners();
+    return response;
+  },
+  (error) => {
+    activeRequests = Math.max(0, activeRequests - 1);
+    notifyListeners();
+    return Promise.reject(error);
+  }
+);
 
 // Projects
 export const fetchProjects = () => api.get('/projects').then((r) => r.data);
