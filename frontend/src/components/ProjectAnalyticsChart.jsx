@@ -90,26 +90,26 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Quantity Comparison */}
-      <div className="glass-card p-5">
+      <div className="glass-card p-6 border-stone-200 shadow-md">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-brand-text">Quantity Verification Funnel</h3>
+            <h3 className="text-sm font-bold text-brand-dark">Quantity Verification Funnel</h3>
             <p className="text-xs text-brand-muted">
               Contracted vs Progress Claimed vs Physical Ground Audit
             </p>
           </div>
-          <span className="text-xs font-mono bg-brand-50 px-2.5 py-1 rounded text-brand-text">
+          <span className="text-xs font-mono bg-stone-100 border border-stone-200 px-3 py-1 rounded-full text-brand-dark font-medium">
             Unit: {unit}
           </span>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={quantityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
-              <XAxis dataKey="stage" tick={{ fill: '#9ca3af', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.8} />
+              <XAxis dataKey="stage" tick={{ fill: '#64748b', fontSize: 11 }} />
+              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="quantity" name="Quantity" radius={[6, 6, 0, 0]}>
+              <Bar dataKey="quantity" name="Quantity" radius={[8, 8, 0, 0]}>
                 {quantityData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
@@ -120,27 +120,27 @@ export default function ProjectAnalyticsChart({ project, extracted }) {
       </div>
 
       {/* Financial Comparison */}
-      <div className="glass-card p-5">
+      <div className="glass-card p-6 border-stone-200 shadow-md">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-brand-text">Financial Audit Breakdown</h3>
+            <h3 className="text-sm font-bold text-brand-dark">Financial Audit Breakdown</h3>
             <p className="text-xs text-brand-muted">Sanctioned Amount vs BOQ vs Total Billed</p>
           </div>
-          <span className="text-xs font-mono bg-brand-50 px-2.5 py-1 rounded text-brand-text">
+          <span className="text-xs font-mono bg-stone-100 border border-stone-200 px-3 py-1 rounded-full text-brand-dark font-medium">
             INR (₹)
           </span>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={financialData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
-              <XAxis dataKey="stage" tick={{ fill: '#9ca3af', fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.8} />
+              <XAxis dataKey="stage" tick={{ fill: '#64748b', fontSize: 11 }} />
               <YAxis
-                tick={{ fill: '#9ca3af', fontSize: 10 }}
+                tick={{ fill: '#64748b', fontSize: 10 }}
                 tickFormatter={(v) => `₹${(v / 10000000).toFixed(1)}Cr`}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="amount" name="Amount" radius={[6, 6, 0, 0]}>
+              <Bar dataKey="amount" name="Amount" radius={[8, 8, 0, 0]}>
                 {financialData.map((entry, index) => (
                   <Cell key={`cell-f-${index}`} fill={entry.fill} />
                 ))}

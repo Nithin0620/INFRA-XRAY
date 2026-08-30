@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { riskScoreColor } from '../lib/utils';
 
 export default function RiskGauge({ score = 0, severity = 'Low', size = 180 }) {

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
+import { FadeUp } from '../lib/motion';
 import {
   MapPin,
   ArrowRight,
@@ -100,14 +101,14 @@ export default function MapView() {
   return (
     <div className="page-container">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+      <FadeUp className="mb-6" amount={0.2}>
         <h1 className="text-3xl font-bold tracking-tight">
           Geographic <span className="text-brand-400">Risk</span> Overview
         </h1>
         <p className="text-brand-muted mt-1">
           Interactive geospatial verification of all government infrastructure tenders across India
         </p>
-      </motion.div>
+      </FadeUp>
 
       {/* Filter Bar */}
       <motion.div
@@ -125,19 +126,19 @@ export default function MapView() {
               placeholder="Search project, state..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-white/30 border border-brand-100 rounded-xl pl-9 pr-4 py-1.5 text-xs text-brand-text placeholder-gray-500 focus:outline-none focus:border-brand-500/50"
+              className="bg-white/80 border border-stone-200 rounded-xl pl-9 pr-4 py-2 text-xs text-brand-text placeholder-stone-400 focus:outline-none focus:border-brand-accent/50 shadow-sm"
             />
           </div>
 
           {/* Severity Filter */}
-          <div className="flex items-center gap-1 bg-white/30 p-1 rounded-xl border border-brand-100 text-xs">
+          <div className="flex items-center gap-1 bg-white/80 p-1 rounded-xl border border-stone-200 text-xs shadow-sm">
             {['ALL', 'CRITICAL', 'HIGH', 'CLEAN'].map((lvl) => (
               <button
                 key={lvl}
                 onClick={() => setSeverityFilter(lvl)}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                   severityFilter === lvl
-                    ? 'bg-brand-600 text-brand-text shadow'
+                    ? 'bg-brand-dark text-brand-surface shadow-sm'
                     : 'text-brand-muted hover:text-brand-text'
                 }`}
               >
@@ -150,7 +151,7 @@ export default function MapView() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="bg-white/30 border border-brand-100 rounded-xl px-3 py-1.5 text-xs text-brand-text focus:outline-none focus:border-brand-500/50"
+            className="bg-white/80 border border-stone-200 rounded-xl px-3 py-2 text-xs text-brand-text focus:outline-none focus:border-brand-accent/50 shadow-sm"
           >
             <option value="ALL">All Categories</option>
             <option value="road">Roads</option>
@@ -160,33 +161,31 @@ export default function MapView() {
           </select>
         </div>
 
-        <div className="text-xs text-brand-muted flex items-center gap-1.5">
-          <Layers className="w-4 h-4 text-brand-400" />
-          Showing <span className="text-brand-text font-semibold">
+        <div className="text-xs text-brand-muted flex items-center gap-1.5 font-medium">
+          <Layers className="w-4 h-4 text-brand-accent" />
+          Showing <span className="text-brand-text font-bold">
             {filteredProjects.length}
-          </span>{' '}
-          of {projects.length} projects
+          </span> of {projects.length} projects
         </div>
       </motion.div>
 
       {/* Main Grid: Interactive Map + Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Interactive Leaflet Map */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="lg:col-span-2 glass-card h-[600px] overflow-hidden relative z-0 flex flex-col"
+          className="lg:col-span-2 glass-card h-[600px] overflow-hidden relative z-0 flex flex-col shadow-lg border-stone-200"
         >
           <MapContainer
             center={mapCenter || [22.5937, 78.9629]}
             zoom={mapZoom || 5}
-            style={{ height: '100%', width: '100%', background: '#090d16' }}
+            style={{ height: '100%', width: '100%', background: '#f8fafc' }}
             scrollWheelZoom={true}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
               maxZoom={19}
             />
 
@@ -267,20 +266,26 @@ export default function MapView() {
 
           {/* Quick Overlay Footer */}
           {selected && (
-            <div className="absolute bottom-3 left-3 right-3 z-10 glass-card p-3 flex items-center justify-between backdrop-blur-xl border border-brand-100">
+            <motion.div
+              key={selected.project_id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+              className="absolute bottom-4 left-4 right-4 z-10 glass-card p-3.5 flex items-center justify-between backdrop-blur-xl border border-white/80 shadow-md"
+            >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs"
+                  className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs"
                   style={{
-                    backgroundColor: `${riskScoreColor(selected.risk_score)}25`,
+                    backgroundColor: `${riskScoreColor(selected.risk_score)}15`,
                     color: riskScoreColor(selected.risk_score),
-                    border: `1.5px solid ${riskScoreColor(selected.risk_score)}`,
+                    border: `2px solid ${riskScoreColor(selected.risk_score)}`,
                   }}
                 >
                   {selected.risk_score ?? '—'}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-brand-text line-clamp-1">
+                  <div className="text-sm font-bold text-brand-text line-clamp-1">
                     {selected.project_name}
                   </div>
                   <div className="text-xs text-brand-muted">
@@ -291,11 +296,17 @@ export default function MapView() {
               </div>
               <Link
                 to={`/project/${selected.project_id}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-brand-text text-xs font-medium transition-colors shrink-0"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-dark hover:bg-[#333] text-brand-surface text-xs font-medium uppercase tracking-[0.04em] transition-all shrink-0 active:scale-95 shadow-sm"
               >
-                Inspect Details <ArrowRight className="w-3.5 h-3.5" />
+                Inspect Details{' '}
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.4, repeat: Infinity }}
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </motion.span>
               </Link>
-            </div>
+            </motion.div>
           )}
         </motion.div>
 
@@ -308,9 +319,16 @@ export default function MapView() {
         >
           <div className="flex items-center justify-between mb-2">
             <h2 className="section-title text-base">
-              <Compass className="w-4 h-4 text-brand-400" /> Monitored Projects
+              <motion.span
+                className="inline-flex"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+              >
+                <Compass className="w-4 h-4 text-brand-accent" />
+              </motion.span>{' '}
+              Monitored Projects
             </h2>
-            <span className="text-xs text-brand-muted font-mono">
+            <span className="text-xs text-brand-muted font-mono bg-stone-100 px-2 py-0.5 rounded-full">
               {filteredProjects.length} sites
             </span>
           </div>
@@ -328,16 +346,17 @@ export default function MapView() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 + i * 0.04 }}
-                  className={`glass-card p-4 cursor-pointer transition-all hover:bg-white/[0.05] ${
+                  whileHover={{ y: -3, x: 4, scale: 1.01 }}
+                  className={`glass-card p-4 cursor-pointer transition-colors border-2 ${
                     isSelected
-                      ? 'border-brand-500/60 bg-brand-500/10 shadow-lg shadow-brand-500/10'
-                      : ''
+                      ? 'border-brand-dark bg-white shadow-md'
+                      : 'border-white/80 hover:border-stone-300'
                   }`}
                   onClick={() => setSelected(p)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium text-brand-text flex items-center gap-1.5 line-clamp-1">
+                      <div className="text-sm font-semibold text-brand-text flex items-center gap-1.5 line-clamp-1">
                         {categoryIcon(p.category)} {p.project_name}
                       </div>
                       <div className="text-xs text-brand-muted mt-1">
@@ -347,9 +366,9 @@ export default function MapView() {
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                       style={{
-                        backgroundColor: `${riskScoreColor(p.risk_score)}20`,
+                        backgroundColor: `${riskScoreColor(p.risk_score)}15`,
                         color: riskScoreColor(p.risk_score),
-                        border: `1px solid ${riskScoreColor(p.risk_score)}60`,
+                        border: `1.5px solid ${riskScoreColor(p.risk_score)}`,
                       }}
                     >
                       {p.risk_score ?? '—'}
@@ -360,7 +379,7 @@ export default function MapView() {
                     <span className={severityColor(p.severity_label)}>{p.severity_label}</span>
                     <Link
                       to={`/project/${p.project_id}`}
-                      className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 font-medium"
+                      className="text-brand-accent hover:underline inline-flex items-center gap-1 font-semibold"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Audit Details <ArrowRight className="w-3 h-3" />

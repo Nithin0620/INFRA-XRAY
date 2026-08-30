@@ -14,24 +14,32 @@ export default {
           muted: '#767676',
           accent: '#905831', // terracotta / warm earthy brown
           surface: '#fafafa',
-          // keep some of old colors so things don't break immediately before we get to index.css
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          200: "#c7d2fe",
-          300: "#a5b4fc",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          800: "#3730a3",
-          900: "#312e81",
-          950: "#1e1b4b",
         },
         severity: {
           green: "#16a34a",
           yellow: "#eab308",
           red: "#dc2626",
           critical: "#991b1b",
+        },
+      },
+      animation: {
+        'float-slow': 'float 8s ease-in-out infinite',
+        'float-reverse': 'floatReverse 10s ease-in-out infinite',
+        'spin-slow': 'spin 25s linear infinite',
+        'pulse-subtle': 'pulseSubtle 4s ease-in-out infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-15px) rotate(4deg)' },
+        },
+        floatReverse: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(15px) rotate(-4deg)' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { opacity: 0.8, transform: 'scale(1)' },
+          '50%': { opacity: 1, transform: 'scale(1.02)' },
         },
       }
     },

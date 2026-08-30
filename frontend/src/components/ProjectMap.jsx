@@ -8,7 +8,7 @@ import { Camera, AlertCircle, CheckCircle } from 'lucide-react';
 // Custom DivIcon for Project Markers
 export function createProjectIcon(score, isSelected = false) {
   const color = riskScoreColor(score);
-  const size = isSelected ? 38 : 30;
+  const size = isSelected ? 38 : 32;
   const pulseClass = score >= 70 ? 'animate-pulse' : '';
 
   return L.divIcon({
@@ -17,17 +17,17 @@ export function createProjectIcon(score, isSelected = false) {
       <div style="
         width: ${size}px;
         height: ${size}px;
-        background-color: #0f172a;
-        border: 2px solid ${color};
-        box-shadow: 0 0 14px ${color}80;
+        background-color: #ffffff;
+        border: 2.5px solid ${color};
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 0 8px ${color}40;
         border-radius: 9999px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: ${color};
-        font-weight: 700;
-        font-size: ${isSelected ? '12px' : '10px'};
-        font-family: monospace;
+        color: #1a1a1a;
+        font-weight: 800;
+        font-size: ${isSelected ? '12px' : '11px'};
+        font-family: 'Geist', sans-serif;
         cursor: pointer;
         transition: all 0.3s ease;
       " class="${pulseClass}">
@@ -48,26 +48,26 @@ export function createPhotoIcon(conditionTag) {
     className: 'custom-photo-marker',
     html: `
       <div style="
-        width: 24px;
-        height: 24px;
-        background-color: #030712;
-        border: 1.5px solid ${color};
-        box-shadow: 0 0 8px ${color}90;
-        border-radius: 6px;
+        width: 26px;
+        height: 26px;
+        background-color: #ffffff;
+        border: 2px solid ${color};
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: ${color};
         cursor: pointer;
       ">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
           <circle cx="12" cy="13" r="3"/>
         </svg>
       </div>
     `,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
   });
 }
 
@@ -113,19 +113,19 @@ export default function ProjectMap({
   return (
     <div
       style={{ height, width: '100%' }}
-      className="rounded-2xl overflow-hidden border border-brand-100 relative z-0"
+      className="rounded-2xl overflow-hidden border border-stone-200 shadow-sm relative z-0"
     >
       <MapContainer
         center={center}
         zoom={12}
-        style={{ height: '100%', width: '100%', background: '#090d16' }}
+        style={{ height: '100%', width: '100%', background: '#f8fafc' }}
         scrollWheelZoom={interactive}
         dragging={interactive}
       >
-        {/* Dark Theme Tile Layer */}
+        {/* Light Theme Tile Layer */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           maxZoom={19}
         />
 

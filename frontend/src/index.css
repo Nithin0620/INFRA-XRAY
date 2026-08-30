@@ -11,7 +11,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #374151 transparent;
+    scrollbar-color: #cbd5e1 transparent;
   }
 
   body {
@@ -30,16 +30,16 @@
 
   /* Liquid Glass Frosted Card Effect */
   .glass-card {
-    @apply bg-white/[0.06] border-[3px] border-white rounded-[44px] shadow-[0_0_4px_0_rgba(0,0,0,0.15)] backdrop-blur-[20px] overflow-hidden;
+    @apply bg-white/[0.65] border-[3px] border-white rounded-[44px] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.06),0_0_4px_0_rgba(0,0,0,0.1)] backdrop-blur-[20px] overflow-hidden;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:shadow-lg hover:scale-[1.01];
+    @apply glass-card transition-all duration-300 hover:shadow-xl hover:scale-[1.01] hover:bg-white/[0.78];
   }
 
   /* Secondary Glass / Tool Buttons */
   .glass-btn {
-    @apply w-11 h-11 flex items-center justify-center bg-transparent border border-white/70 rounded-full backdrop-blur-[14px] transition-transform hover:scale-105 active:scale-95;
+    @apply w-11 h-11 flex items-center justify-center bg-white/70 border border-white/80 rounded-full shadow-sm backdrop-blur-[14px] transition-transform hover:scale-105 active:scale-95 text-brand-text;
   }
 
   .glass-text {
@@ -68,25 +68,25 @@
     @apply font-display text-[40px] text-black leading-none select-none tracking-tight;
   }
 
-  /* Existing utility classes */
+  /* Severity badge styling */
   .severity-badge {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider;
   }
 
   .severity-green {
-    @apply severity-badge bg-severity-green/10 text-severity-green border border-severity-green/20;
+    @apply severity-badge bg-emerald-50 text-emerald-700 border border-emerald-200;
   }
 
   .severity-yellow {
-    @apply severity-badge bg-severity-yellow/10 text-severity-yellow border border-severity-yellow/20;
+    @apply severity-badge bg-amber-50 text-amber-700 border border-amber-200;
   }
 
   .severity-red {
-    @apply severity-badge bg-severity-red/10 text-severity-red border border-severity-red/20;
+    @apply severity-badge bg-rose-50 text-rose-700 border border-rose-200;
   }
 
   .metric-card {
-    @apply glass-card p-6 flex flex-col gap-2;
+    @apply glass-card p-6 flex flex-col gap-2 transition-transform duration-300 hover:-translate-y-1;
   }
 
   .metric-value {
@@ -104,4 +104,77 @@
   .page-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10;
   }
+}
+
+/* 3D Perspective Canvas Container */
+.perspective-3d {
+  perspective: 1200px;
+  perspective-origin: 50% 20%;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Holographic 3D floor grid */
+.grid-floor {
+  background-image:
+    linear-gradient(rgba(144, 88, 49, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(144, 88, 49, 0.18) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: rotateX(74deg);
+  transform-origin: center;
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 38%, black 15%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 38%, black 15%, transparent 70%);
+  animation: gridScroll 18s linear infinite;
+}
+
+@keyframes gridScroll {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 480px,
+      480px 0;
+  }
+}
+
+/* Cinematic moving scanline */
+.scanline-grad {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(144, 88, 49, 0.25) 30%,
+    rgba(244, 162, 97, 0.5) 50%,
+    rgba(144, 88, 49, 0.25) 70%,
+    transparent
+  );
+  filter: blur(0.5px);
+}
+
+/* Subtle blueprint corner brackets for cinematic frames */
+@media (prefers-reduced-motion: reduce) {
+  .grid-floor {
+    animation: none;
+  }
+}
+
+/* Custom light leaflet popup styling */
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  border-radius: 18px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  color: #1a1a1a;
+  padding: 4px;
+}
+
+.custom-leaflet-popup .leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.94);
 }

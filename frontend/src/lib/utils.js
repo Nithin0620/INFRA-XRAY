@@ -6,9 +6,11 @@ export function cn(...inputs) {
 }
 
 export function formatINR(amount) {
-  if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)} Cr`;
-  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)} L`;
-  return `₹${amount.toLocaleString('en-IN')}`;
+  if (amount === undefined || amount === null || isNaN(Number(amount))) return '₹0';
+  const num = Number(amount);
+  if (num >= 10000000) return `₹${(num / 10000000).toFixed(1)} Cr`;
+  if (num >= 100000) return `₹${(num / 100000).toFixed(1)} L`;
+  return `₹${num.toLocaleString('en-IN')}`;
 }
 
 export function severityColor(label) {
