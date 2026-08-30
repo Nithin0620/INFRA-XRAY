@@ -2,7 +2,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { Layers, Calendar, AlertCircle, CheckCircle2, Satellite, Columns, SplitSquareVertical } from 'lucide-react';
+import {
+  Layers,
+  Calendar,
+  AlertCircle,
+  CheckCircle2,
+  Satellite,
+  Columns,
+  SplitSquareVertical,
+} from 'lucide-react';
 import { riskScoreColor } from '../lib/utils';
 
 // Helper controller to properly zoom and center coordinates
@@ -75,7 +83,7 @@ export default function SatelliteComparison({ project }) {
   const coords = boundary?.coordinates || [];
   const isPolygon = boundary?.type === 'Polygon';
 
-  let center = [24.7707, 85.0280];
+  let center = [24.7707, 85.028];
   let bounds = null;
   if (coords.length > 0) {
     const latLngs = coords.map((c) => [c[0], c[1]]);
@@ -140,7 +148,8 @@ export default function SatelliteComparison({ project }) {
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
       : 'https://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}';
 
-  const baselineTileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  const baselineTileUrl =
+    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 
   return (
     <div className="space-y-4">
@@ -158,7 +167,12 @@ export default function SatelliteComparison({ project }) {
               </span>
             </h3>
             <p className="text-xs text-brand-muted mt-0.5">
-              Center: <span className="font-mono text-brand-dark font-semibold">{center[0].toFixed(4)}° N, {center[1].toFixed(4)}° E</span> · Drag the center divider to reveal the pre-construction baseline (left) vs satellite orthophoto (right)
+              Center:{' '}
+              <span className="font-mono text-brand-dark font-semibold">
+                {center[0].toFixed(4)}° N, {center[1].toFixed(4)}° E
+              </span>{' '}
+              · Drag the center divider to reveal the pre-construction baseline (left) vs satellite
+              orthophoto (right)
             </p>
           </div>
         </div>
@@ -227,7 +241,7 @@ export default function SatelliteComparison({ project }) {
           >
             {/* Layer 1: Bottom Base (Pre-Construction Topo / Street Baseline Map) */}
             <TileLayer
-              attribution='&copy; Baseline Map'
+              attribution="&copy; Baseline Map"
               url={baselineTileUrl}
               maxZoom={19}
               zIndex={1}
@@ -236,7 +250,7 @@ export default function SatelliteComparison({ project }) {
             {/* Layer 2: Top Layer (High-Resolution Satellite Orthophoto) clipped by sliderPosition */}
             <div id="wipe-satellite-layer" className="leaflet-top-satellite">
               <TileLayer
-                attribution='&copy; Satellite'
+                attribution="&copy; Satellite"
                 url={satelliteTileUrl}
                 maxZoom={19}
                 zIndex={10}
@@ -275,7 +289,9 @@ export default function SatelliteComparison({ project }) {
           <div className="absolute top-5 left-5 z-[400] glass-card px-4 py-2 bg-white/95 border-stone-200 text-brand-dark shadow-xl flex items-center gap-2 pointer-events-none">
             <Calendar className="w-4 h-4 text-amber-600" />
             <div>
-              <div className="text-[10px] uppercase font-bold tracking-wider text-amber-700">Pre-Construction Baseline (Left)</div>
+              <div className="text-[10px] uppercase font-bold tracking-wider text-amber-700">
+                Pre-Construction Baseline (Left)
+              </div>
               <div className="text-xs font-mono font-bold">{startDate}</div>
             </div>
           </div>
@@ -284,7 +300,9 @@ export default function SatelliteComparison({ project }) {
           <div className="absolute top-5 right-5 z-[400] glass-card px-4 py-2 bg-stone-950/85 border-stone-700 text-white shadow-xl flex items-center gap-2 pointer-events-none">
             <Calendar className="w-4 h-4 text-emerald-400" />
             <div>
-              <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Current Satellite (Right)</div>
+              <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
+                Current Satellite (Right)
+              </div>
               <div className="text-xs font-mono font-bold">{deadlineDate}</div>
             </div>
           </div>
@@ -341,7 +359,9 @@ export default function SatelliteComparison({ project }) {
             <div className="absolute top-4 left-4 z-[400] glass-card px-3.5 py-1.5 bg-white/95 border-stone-200 text-brand-dark shadow-md flex items-center gap-2">
               <Calendar className="w-4 h-4 text-amber-600" />
               <div>
-                <div className="text-[10px] uppercase font-bold tracking-wider text-amber-700">Pre-Construction Baseline</div>
+                <div className="text-[10px] uppercase font-bold tracking-wider text-amber-700">
+                  Pre-Construction Baseline
+                </div>
                 <div className="text-xs font-mono font-bold">{startDate}</div>
               </div>
             </div>
@@ -353,7 +373,7 @@ export default function SatelliteComparison({ project }) {
               scrollWheelZoom={true}
               dragging={true}
             >
-              <TileLayer attribution='&copy; CARTO' url={baselineTileUrl} maxZoom={19} />
+              <TileLayer attribution="&copy; CARTO" url={baselineTileUrl} maxZoom={19} />
               <MapViewController center={center} bounds={bounds} zoom={14} />
               <MapSyncWatcher onMapMove={handleMapMove} />
 
@@ -361,7 +381,12 @@ export default function SatelliteComparison({ project }) {
               {coords.length > 0 && isPolygon && (
                 <Polygon
                   positions={coords}
-                  pathOptions={{ color: '#905831', fillColor: '#905831', fillOpacity: 0.2, weight: 3 }}
+                  pathOptions={{
+                    color: '#905831',
+                    fillColor: '#905831',
+                    fillOpacity: 0.2,
+                    weight: 3,
+                  }}
                 />
               )}
               {coords.length > 0 && !isPolygon && (
@@ -383,7 +408,9 @@ export default function SatelliteComparison({ project }) {
             <div className="absolute top-4 right-4 z-[400] glass-card px-3.5 py-1.5 bg-stone-950/85 border-stone-700 text-white shadow-md flex items-center gap-2">
               <Calendar className="w-4 h-4 text-emerald-400" />
               <div>
-                <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Current Satellite Orbit</div>
+                <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
+                  Current Satellite Orbit
+                </div>
                 <div className="text-xs font-mono font-bold">{deadlineDate}</div>
               </div>
             </div>
@@ -396,7 +423,7 @@ export default function SatelliteComparison({ project }) {
               dragging={true}
             >
               <TileLayer
-                attribution='&copy; Satellite Orthophoto'
+                attribution="&copy; Satellite Orthophoto"
                 url={satelliteTileUrl}
                 maxZoom={19}
               />
@@ -461,7 +488,9 @@ export default function SatelliteComparison({ project }) {
           <div className="text-sm font-bold text-brand-dark">
             {imagerySource === 'esri' ? 'ArcGIS World Imagery (Maxar)' : 'Google Satellite Hybrid'}
           </div>
-          <div className="text-[11px] text-brand-muted mt-0.5">True Geographic Sub-meter Orthophoto</div>
+          <div className="text-[11px] text-brand-muted mt-0.5">
+            True Geographic Sub-meter Orthophoto
+          </div>
         </div>
 
         <div className="glass-card p-4 border-stone-200 shadow-sm">
@@ -469,7 +498,9 @@ export default function SatelliteComparison({ project }) {
             Geospatial Registration
           </div>
           <div className="text-sm font-bold text-brand-dark">WGS84 EPSG:4326 Synchronized</div>
-          <div className="text-[11px] text-brand-muted mt-0.5">Single map instance with dual-pane clipping</div>
+          <div className="text-[11px] text-brand-muted mt-0.5">
+            Single map instance with dual-pane clipping
+          </div>
         </div>
 
         <div className="glass-card p-4 border-stone-200 shadow-sm">
@@ -477,9 +508,12 @@ export default function SatelliteComparison({ project }) {
             Temporal Baseline
           </div>
           <div className="text-sm font-bold text-brand-dark">
-            {Math.round((new Date(deadlineDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))} Days Elapsed
+            {Math.round((new Date(deadlineDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))}{' '}
+            Days Elapsed
           </div>
-          <div className="text-[11px] text-brand-muted mt-0.5">Pre-work baseline vs Current Satellite</div>
+          <div className="text-[11px] text-brand-muted mt-0.5">
+            Pre-work baseline vs Current Satellite
+          </div>
         </div>
       </div>
     </div>

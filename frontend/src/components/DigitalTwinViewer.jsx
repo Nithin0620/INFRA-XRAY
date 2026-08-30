@@ -13,9 +13,46 @@ import {
   Flame,
   CheckCircle,
   HelpCircle,
-  Volume2
+  Volume2,
 } from 'lucide-react';
 import { riskScoreColor, formatINR } from '../lib/utils';
+
+// Define 3D defect points with coordinate offsets
+const DEFECTS = [
+  {
+    id: 'DEF-01',
+    title: 'Deep Structural Micro-Crack (3.2mm)',
+    type: 'crack',
+    severity: 'high',
+    location: 'Span Pier #4 / Sub-base Layer',
+    coords: { x: -45, y: -15, z: 20 },
+    depthMm: 3.2,
+    ultrasoundDensity: '68% (Compromised)',
+    riskImpact: '+24 Risk Pts',
+  },
+  {
+    id: 'DEF-02',
+    title: 'Pothole Void & Subgrade Cavity',
+    type: 'pothole',
+    severity: 'critical',
+    location: 'Station KM 14+200 - Outer Lane',
+    coords: { x: 30, y: -25, z: -10 },
+    depthMm: 8.5,
+    ultrasoundDensity: '42% (Severe Soil Washout)',
+    riskImpact: '+35 Risk Pts',
+  },
+  {
+    id: 'DEF-03',
+    title: 'Asphalt Compaction Deficit',
+    type: 'compaction',
+    severity: 'moderate',
+    location: 'Surface Wearing Course (Top 40mm)',
+    coords: { x: 60, y: 10, z: 35 },
+    depthMm: 1.1,
+    ultrasoundDensity: '81% (Below 95% Spec)',
+    riskImpact: '+12 Risk Pts',
+  },
+];
 
 export default function DigitalTwinViewer({ project }) {
   const canvasRef = useRef(null);
@@ -31,42 +68,7 @@ export default function DigitalTwinViewer({ project }) {
   const isBridge = project?.category === 'bridge';
   const isBuilding = project?.category === 'building';
 
-  // Define 3D defect points with coordinate offsets
-  const defects = [
-    {
-      id: 'DEF-01',
-      title: 'Deep Structural Micro-Crack (3.2mm)',
-      type: 'crack',
-      severity: 'high',
-      location: 'Span Pier #4 / Sub-base Layer',
-      coords: { x: -45, y: -15, z: 20 },
-      depthMm: 3.2,
-      ultrasoundDensity: '68% (Compromised)',
-      riskImpact: '+24 Risk Pts',
-    },
-    {
-      id: 'DEF-02',
-      title: 'Pothole Void & Subgrade Cavity',
-      type: 'pothole',
-      severity: 'critical',
-      location: 'Station KM 14+200 - Outer Lane',
-      coords: { x: 30, y: -25, z: -10 },
-      depthMm: 8.5,
-      ultrasoundDensity: '42% (Severe Soil Washout)',
-      riskImpact: '+35 Risk Pts',
-    },
-    {
-      id: 'DEF-03',
-      title: 'Asphalt Compaction Deficit',
-      type: 'compaction',
-      severity: 'moderate',
-      location: 'Surface Wearing Course (Top 40mm)',
-      coords: { x: 60, y: 10, z: 35 },
-      depthMm: 1.1,
-      ultrasoundDensity: '81% (Below 95% Spec)',
-      riskImpact: '+12 Risk Pts',
-    },
-  ];
+  const defects = DEFECTS;
 
   // Canvas 3D rendering loop (Orthographic projection engine with LiDAR point-clouds & structural meshes)
   useEffect(() => {
@@ -85,7 +87,7 @@ export default function DigitalTwinViewer({ project }) {
     for (let i = 0; i < numPoints; i++) {
       const u = (i / numPoints) * 2 - 1; // -1 to 1 along length
       const lengthX = u * 220;
-      
+
       if (isBuilding) {
         // Multi-story floor plates
         const floor = Math.floor(Math.random() * 5);
@@ -203,7 +205,12 @@ export default function DigitalTwinViewer({ project }) {
           } else if (renderMode === 'thermal') {
             // Thermal Dissipation (Blue -> Yellow -> Red)
             const heat = pt.stress;
-            ctx.fillStyle = heat > 0.6 ? 'rgba(239, 68, 68, 0.85)' : heat > 0.3 ? 'rgba(245, 158, 11, 0.8)' : 'rgba(56, 189, 248, 0.7)';
+            ctx.fillStyle =
+              heat > 0.6
+                ? 'rgba(239, 68, 68, 0.85)'
+                : heat > 0.3
+                  ? 'rgba(245, 158, 11, 0.8)'
+                  : 'rgba(56, 189, 248, 0.7)';
           } else if (renderMode === 'stress') {
             // FEA Structural Stress Gradient
             const str = pt.stress;
@@ -235,7 +242,7 @@ export default function DigitalTwinViewer({ project }) {
       }
 
       // Render 3D Defect Pin Annotations directly in 3D Model Space
-      defects.forEach((def) => {
+      DEFECTS.forEach((def) => {
         const pt = def.coords;
         if (pt.x > depthThreshold) return;
 
@@ -252,7 +259,8 @@ export default function DigitalTwinViewer({ project }) {
         // Pulsing Anomaly Halo
         ctx.beginPath();
         ctx.arc(sx, sy, isSel ? 18 : 12, 0, Math.PI * 2);
-        ctx.fillStyle = def.severity === 'critical' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(245, 158, 11, 0.25)';
+        ctx.fillStyle =
+          def.severity === 'critical' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(245, 158, 11, 0.25)';
         ctx.fill();
 
         // Pin Core
@@ -278,7 +286,16 @@ export default function DigitalTwinViewer({ project }) {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [renderMode, isPaused, rotationSpeed, sliceDepth, isCritical, isBuilding, isBridge, selectedAnomaly]);
+  }, [
+    renderMode,
+    isPaused,
+    rotationSpeed,
+    sliceDepth,
+    isCritical,
+    isBuilding,
+    isBridge,
+    selectedAnomaly,
+  ]);
 
   return (
     <div className="space-y-6">
@@ -296,7 +313,8 @@ export default function DigitalTwinViewer({ project }) {
               </span>
             </h3>
             <p className="text-xs text-brand-muted mt-0.5">
-              360° interactive structural flythrough with ultrasonic density tomography and subsurface defect projection
+              360° interactive structural flythrough with ultrasonic density tomography and
+              subsurface defect projection
             </p>
           </div>
         </div>
@@ -350,9 +368,7 @@ export default function DigitalTwinViewer({ project }) {
               {isPaused ? 'Resume Orbit' : 'Pause Orbit'}
             </button>
             <div className="h-3 w-px bg-stone-300" />
-            <span className="text-[11px] text-brand-muted font-mono">
-              Speed: {rotationSpeed}x
-            </span>
+            <span className="text-[11px] text-brand-muted font-mono">Speed: {rotationSpeed}x</span>
             <button
               onClick={() => setRotationSpeed((s) => (s === 1 ? 2 : s === 2 ? 0.5 : 1))}
               className="text-[10px] font-bold bg-stone-100 hover:bg-stone-200 px-2 py-0.5 rounded text-brand-dark"

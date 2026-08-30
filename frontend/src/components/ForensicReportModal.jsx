@@ -12,7 +12,7 @@ import {
   Calendar,
   IndianRupee,
   Hash,
-  X
+  X,
 } from 'lucide-react';
 import { formatINR, riskScoreColor } from '../lib/utils';
 
@@ -43,7 +43,6 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm print:p-0 print:bg-white print:static">
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-stone-300 overflow-hidden my-8 print:border-none print:shadow-none print:m-0 print:max-w-none">
-        
         {/* Action Header Bar (Hidden during print) */}
         <div className="px-6 py-4 bg-stone-900 text-white flex items-center justify-between print:hidden">
           <div className="flex items-center gap-2">
@@ -71,7 +70,6 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
 
         {/* Printable Official CAG / Vigilance Dossier Content */}
         <div className="p-8 sm:p-12 space-y-8 bg-white text-stone-900 font-sans print:p-6">
-          
           {/* Header & Watermark */}
           <div className="border-b-2 border-stone-900 pb-6">
             <div className="flex items-start justify-between">
@@ -83,7 +81,8 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
                   Forensic Infrastructure Audit Report
                 </h1>
                 <div className="text-xs text-stone-600 font-mono mt-1">
-                  Statutory Reference: Public Procurement Transparency & Anti-Corruption Oversight Act
+                  Statutory Reference: Public Procurement Transparency & Anti-Corruption Oversight
+                  Act
                 </div>
               </div>
               <div className="text-right">
@@ -98,26 +97,44 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
           {/* Executive Summary Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-stone-50 rounded-2xl border border-stone-200">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">Project ID / Tender</div>
-              <div className="text-xs font-mono font-bold text-stone-900 mt-0.5">{project.tender_id}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                Project ID / Tender
+              </div>
+              <div className="text-xs font-mono font-bold text-stone-900 mt-0.5">
+                {project.tender_id}
+              </div>
               <div className="text-[11px] text-stone-600 truncate">{project.project_name}</div>
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">Contractor Awarded</div>
-              <div className="text-xs font-bold text-stone-900 mt-0.5 truncate">{project.contractor_name}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                Contractor Awarded
+              </div>
+              <div className="text-xs font-bold text-stone-900 mt-0.5 truncate">
+                {project.contractor_name}
+              </div>
               <div className="text-[11px] text-stone-600 font-mono">{project.state}</div>
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">Sanctioned Amount</div>
-              <div className="text-xs font-bold text-stone-900 mt-0.5">{formatINR(project.sanctioned_amount_inr)}</div>
-              <div className="text-[11px] text-stone-600">{project.sanctioned_quantity} {project.unit}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                Sanctioned Amount
+              </div>
+              <div className="text-xs font-bold text-stone-900 mt-0.5">
+                {formatINR(project.sanctioned_amount_inr)}
+              </div>
+              <div className="text-[11px] text-stone-600">
+                {project.sanctioned_quantity} {project.unit}
+              </div>
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">Risk Assessment</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                Risk Assessment
+              </div>
               <div className="text-sm font-mono font-black" style={{ color: scoreColor }}>
                 {project.risk_score ?? '—'} / 100 ({project.severity_label})
               </div>
-              <div className="text-[11px] text-stone-600 font-semibold">{redFlags.length} Critical Violations</div>
+              <div className="text-[11px] text-stone-600 font-semibold">
+                {redFlags.length} Critical Violations
+              </div>
             </div>
           </div>
 
@@ -139,40 +156,70 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
               <tbody className="divide-y divide-stone-200">
                 <tr>
                   <td className="p-3 font-semibold border-r border-stone-200">Contract Sanction</td>
-                  <td className="p-3 border-r border-stone-200">{project.sanctioned_quantity} {project.unit}</td>
-                  <td className="p-3 border-r border-stone-200">{project.sanctioned_quantity} {project.unit}</td>
+                  <td className="p-3 border-r border-stone-200">
+                    {project.sanctioned_quantity} {project.unit}
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {project.sanctioned_quantity} {project.unit}
+                  </td>
                   <td className="p-3 border-r border-stone-200 font-mono">0.0%</td>
                   <td className="p-3 font-bold text-emerald-700">BASE SPEC</td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-semibold border-r border-stone-200">Contractor Progress Claim</td>
-                  <td className="p-3 border-r border-stone-200">{extracted?.progress_report?.quantity_completed || '—'} {project.unit}</td>
-                  <td className="p-3 border-r border-stone-200">{extracted?.progress_report?.percent_complete || 0}% Complete</td>
+                  <td className="p-3 font-semibold border-r border-stone-200">
+                    Contractor Progress Claim
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {extracted?.progress_report?.quantity_completed || '—'} {project.unit}
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {extracted?.progress_report?.percent_complete || 0}% Complete
+                  </td>
                   <td className="p-3 border-r border-stone-200 font-mono">—</td>
                   <td className="p-3 font-semibold text-stone-600">CLAIMED</td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-semibold border-r border-stone-200">Physical Ground Inspection</td>
-                  <td className="p-3 border-r border-stone-200">{extracted?.inspection_report?.verified_quantity || '—'} {project.unit}</td>
-                  <td className="p-3 border-r border-stone-200">{extracted?.inspection_report?.inspector_name || 'Verified'}</td>
+                  <td className="p-3 font-semibold border-r border-stone-200">
+                    Physical Ground Inspection
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {extracted?.inspection_report?.verified_quantity || '—'} {project.unit}
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {extracted?.inspection_report?.inspector_name || 'Verified'}
+                  </td>
                   <td className="p-3 border-r border-stone-200 font-mono font-bold text-rose-700">
                     {extracted?.inspection_report && extracted?.progress_report
                       ? `${(((extracted.progress_report.quantity_completed - extracted.inspection_report.verified_quantity) / extracted.progress_report.quantity_completed) * 100).toFixed(1)}% Deficit`
                       : '0%'}
                   </td>
                   <td className="p-3 font-bold text-rose-700">
-                    {redFlags.some(f => f.category === 'quantity_mismatch') ? 'MISMATCH' : 'VERIFIED'}
+                    {redFlags.some((f) => f.category === 'quantity_mismatch')
+                      ? 'MISMATCH'
+                      : 'VERIFIED'}
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-semibold border-r border-stone-200">Financial Billing (Invoice)</td>
-                  <td className="p-3 border-r border-stone-200">{formatINR(project.sanctioned_amount_inr)}</td>
-                  <td className="p-3 border-r border-stone-200">{formatINR(extracted?.invoice?.billed_amount_inr || project.sanctioned_amount_inr)}</td>
+                  <td className="p-3 font-semibold border-r border-stone-200">
+                    Financial Billing (Invoice)
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {formatINR(project.sanctioned_amount_inr)}
+                  </td>
+                  <td className="p-3 border-r border-stone-200">
+                    {formatINR(
+                      extracted?.invoice?.billed_amount_inr || project.sanctioned_amount_inr
+                    )}
+                  </td>
                   <td className="p-3 border-r border-stone-200 font-mono">
-                    {extracted?.invoice?.billed_amount_inr > project.sanctioned_amount_inr ? '+Overbilled' : 'In Budget'}
+                    {extracted?.invoice?.billed_amount_inr > project.sanctioned_amount_inr
+                      ? '+Overbilled'
+                      : 'In Budget'}
                   </td>
                   <td className="p-3 font-bold text-stone-900">
-                    {extracted?.invoice?.billed_amount_inr > project.sanctioned_amount_inr ? 'OVERBILLING' : 'VALID'}
+                    {extracted?.invoice?.billed_amount_inr > project.sanctioned_amount_inr
+                      ? 'OVERBILLING'
+                      : 'VALID'}
                   </td>
                 </tr>
               </tbody>
@@ -186,7 +233,8 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
             </h3>
             {flags.length === 0 ? (
               <div className="p-4 bg-emerald-50 text-emerald-800 text-xs rounded-xl border border-emerald-200">
-                No compliance or physical defects detected. Project meets statutory execution standards.
+                No compliance or physical defects detected. Project meets statutory execution
+                standards.
               </div>
             ) : (
               <div className="space-y-2">
@@ -203,9 +251,13 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
                       <span className="font-mono font-bold text-[10px] uppercase px-2 py-0.5 rounded bg-white border border-stone-300">
                         {flag.source_module} · {flag.category || 'Discrepancy'}
                       </span>
-                      <span className={`font-bold text-[10px] uppercase font-mono px-2 py-0.5 rounded ${
-                        flag.severity === 'red' ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
-                      }`}>
+                      <span
+                        className={`font-bold text-[10px] uppercase font-mono px-2 py-0.5 rounded ${
+                          flag.severity === 'red'
+                            ? 'bg-rose-600 text-white'
+                            : 'bg-amber-600 text-white'
+                        }`}
+                      >
                         {flag.severity} RISK
                       </span>
                     </div>
@@ -225,17 +277,25 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
           <div className="pt-6 border-t-2 border-stone-300">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs">
               <div>
-                <div className="text-stone-500 text-[10px] uppercase font-bold">AI Forensic Engine</div>
+                <div className="text-stone-500 text-[10px] uppercase font-bold">
+                  AI Forensic Engine
+                </div>
                 <div className="font-mono font-bold mt-1">INFRA-XRAY Engine v2.4</div>
-                <div className="text-[10px] text-stone-500">SHA-256: d41d8cd98f00b204e9800998ecf8427e</div>
+                <div className="text-[10px] text-stone-500">
+                  SHA-256: d41d8cd98f00b204e9800998ecf8427e
+                </div>
               </div>
               <div>
-                <div className="text-stone-500 text-[10px] uppercase font-bold">Superintending Auditor</div>
+                <div className="text-stone-500 text-[10px] uppercase font-bold">
+                  Superintending Auditor
+                </div>
                 <div className="font-bold mt-1">Chief Technical Examiner</div>
                 <div className="text-[10px] text-stone-500">Central Vigilance Commission</div>
               </div>
               <div className="text-right">
-                <div className="text-stone-500 text-[10px] uppercase font-bold">Official Seal & Action</div>
+                <div className="text-stone-500 text-[10px] uppercase font-bold">
+                  Official Seal & Action
+                </div>
                 <div className="font-bold mt-1 text-rose-700">
                   {project.risk_score >= 50 ? 'REFER TO ENFORCEMENT' : 'PASSED AUDIT'}
                 </div>
@@ -243,7 +303,6 @@ export default function ForensicReportModal({ project, extracted, flags = [], on
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import {
   Receipt,
   Scale,
   ShieldCheck,
-  ShieldAlert
+  ShieldAlert,
 } from 'lucide-react';
 import { formatINR, riskScoreColor } from '../lib/utils';
 
@@ -40,19 +40,19 @@ export default function ScamSimulator({ project }) {
   const sim = useMemo(() => {
     const simulatedBilledCost = Math.round(baseCost * (1 + costInflationPercent / 100));
     const costExcess = simulatedBilledCost - baseCost;
-    
+
     const simulatedActualQty = Math.max(0.1, baseQty * (1 - physicalUnderdeliveryPercent / 100));
     const ghostQty = baseQty - simulatedActualQty;
     const ghostWasteINR = Math.round((ghostQty / baseQty) * baseCost);
 
     // Calculate dynamic risk score (0 - 100)
-    let score = (project?.risk_score || 25);
-    
+    let score = project?.risk_score || 25;
+
     // Penalties
-    score += (costInflationPercent * 0.45);
-    score += (physicalUnderdeliveryPercent * 0.65);
-    score += (gpsDeviationMeters / 100);
-    score += (bidderCartelMarginPercent * 0.4);
+    score += costInflationPercent * 0.45;
+    score += physicalUnderdeliveryPercent * 0.65;
+    score += gpsDeviationMeters / 100;
+    score += bidderCartelMarginPercent * 0.4;
 
     const clampedScore = Math.min(100, Math.max(0, Math.round(score)));
 
@@ -103,7 +103,15 @@ export default function ScamSimulator({ project }) {
       label,
       flags: simulatedFlags,
     };
-  }, [baseCost, baseQty, costInflationPercent, physicalUnderdeliveryPercent, gpsDeviationMeters, bidderCartelMarginPercent, project]);
+  }, [
+    baseCost,
+    baseQty,
+    costInflationPercent,
+    physicalUnderdeliveryPercent,
+    gpsDeviationMeters,
+    bidderCartelMarginPercent,
+    project,
+  ]);
 
   const scoreColor = riskScoreColor(sim.score);
 
@@ -123,7 +131,8 @@ export default function ScamSimulator({ project }) {
               </span>
             </h3>
             <p className="text-xs text-brand-muted mt-0.5">
-              Inject synthetic overbilling, ghost construction, or GPS geofence breaches to test detection models live.
+              Inject synthetic overbilling, ghost construction, or GPS geofence breaches to test
+              detection models live.
             </p>
           </div>
         </div>
@@ -138,10 +147,8 @@ export default function ScamSimulator({ project }) {
 
       {/* Main Grid: Parameter Controls (Left) vs Live Impact Telemetry (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
         {/* Left Column: Interactive Anomaly Sliders (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
-          
           {/* Parameter 1: Cost Inflation / Overbilling */}
           <div className="glass-card p-5 border-stone-200 shadow-sm space-y-3 bg-white/80">
             <div className="flex items-center justify-between">
@@ -149,8 +156,12 @@ export default function ScamSimulator({ project }) {
                 <Receipt className="w-4 h-4 text-amber-700" />
                 <span>Invoice Rate / Cost Inflation</span>
               </div>
-              <span className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${costInflationPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}>
-                {costInflationPercent > 0 ? `+${costInflationPercent}%` : `${costInflationPercent}%`}
+              <span
+                className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${costInflationPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}
+              >
+                {costInflationPercent > 0
+                  ? `+${costInflationPercent}%`
+                  : `${costInflationPercent}%`}
               </span>
             </div>
             <input
@@ -164,7 +175,9 @@ export default function ScamSimulator({ project }) {
             />
             <div className="flex items-center justify-between text-[11px] text-brand-muted">
               <span>-20% (Under-budget)</span>
-              <span className="font-mono font-semibold text-brand-dark">Billed: {formatINR(sim.simulatedBilledCost)}</span>
+              <span className="font-mono font-semibold text-brand-dark">
+                Billed: {formatINR(sim.simulatedBilledCost)}
+              </span>
               <span>+100% (Double billed)</span>
             </div>
           </div>
@@ -176,7 +189,9 @@ export default function ScamSimulator({ project }) {
                 <FileSpreadsheet className="w-4 h-4 text-amber-700" />
                 <span>Ghost Infrastructure (Unbuilt Physical Deficit)</span>
               </div>
-              <span className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${physicalUnderdeliveryPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}>
+              <span
+                className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${physicalUnderdeliveryPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}
+              >
                 {physicalUnderdeliveryPercent}% Unbuilt
               </span>
             </div>
@@ -191,7 +206,9 @@ export default function ScamSimulator({ project }) {
             />
             <div className="flex items-center justify-between text-[11px] text-brand-muted">
               <span>0% (100% Built)</span>
-              <span className="font-mono font-semibold text-brand-dark">Verified: {sim.simulatedActualQty.toFixed(1)} {baseUnit}</span>
+              <span className="font-mono font-semibold text-brand-dark">
+                Verified: {sim.simulatedActualQty.toFixed(1)} {baseUnit}
+              </span>
               <span>80% (Severe Ghost Works)</span>
             </div>
           </div>
@@ -203,7 +220,9 @@ export default function ScamSimulator({ project }) {
                 <MapPin className="w-4 h-4 text-amber-700" />
                 <span>Geofence Displacement (Fake Site Coordinates)</span>
               </div>
-              <span className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${gpsDeviationMeters > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}>
+              <span
+                className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${gpsDeviationMeters > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}
+              >
                 {gpsDeviationMeters} meters
               </span>
             </div>
@@ -218,7 +237,9 @@ export default function ScamSimulator({ project }) {
             />
             <div className="flex items-center justify-between text-[11px] text-brand-muted">
               <span>0m (Exact GPS Route)</span>
-              <span className="font-mono font-semibold text-brand-dark">Geofence Threshold: 250m</span>
+              <span className="font-mono font-semibold text-brand-dark">
+                Geofence Threshold: 250m
+              </span>
               <span>5,000m (Out-of-boundary)</span>
             </div>
           </div>
@@ -230,7 +251,9 @@ export default function ScamSimulator({ project }) {
                 <Scale className="w-4 h-4 text-amber-700" />
                 <span>Cartel Tender Bid-Rigging Margin</span>
               </div>
-              <span className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${bidderCartelMarginPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}>
+              <span
+                className={`font-mono text-xs font-bold px-2.5 py-0.5 rounded-full ${bidderCartelMarginPercent > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700'}`}
+              >
                 +{bidderCartelMarginPercent}% Premium
               </span>
             </div>
@@ -249,40 +272,56 @@ export default function ScamSimulator({ project }) {
               <span>+50% (Bid Rigging)</span>
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Live Recalculated Risk Gauge & Impact Dossier (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
-          
           {/* Dynamic Score Card */}
           <div className="glass-card p-6 border-2 border-stone-300 shadow-xl bg-white text-center relative overflow-hidden">
             <div className="text-[11px] font-bold uppercase tracking-widest text-brand-muted mb-2">
               Recalculated Anomaly Score
             </div>
-            
+
             <div className="my-3 flex items-center justify-center">
-              <span className="text-6xl font-black font-mono tracking-tight" style={{ color: scoreColor }}>
+              <span
+                className="text-6xl font-black font-mono tracking-tight"
+                style={{ color: scoreColor }}
+              >
                 {sim.score}
               </span>
               <span className="text-xl font-mono text-stone-400 font-bold ml-1">/100</span>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-bold uppercase font-mono shadow-sm" style={{ backgroundColor: `${scoreColor}18`, color: scoreColor, border: `1px solid ${scoreColor}40` }}>
-              {sim.score >= 70 ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+            <div
+              className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-bold uppercase font-mono shadow-sm"
+              style={{
+                backgroundColor: `${scoreColor}18`,
+                color: scoreColor,
+                border: `1px solid ${scoreColor}40`,
+              }}
+            >
+              {sim.score >= 70 ? (
+                <ShieldAlert className="w-4 h-4" />
+              ) : (
+                <ShieldCheck className="w-4 h-4" />
+              )}
               {sim.label} Risk Severity
             </div>
 
             {/* Estimated Public Waste Meter */}
             <div className="mt-6 pt-5 border-t border-stone-200 grid grid-cols-2 gap-3 text-left">
               <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
-                <div className="text-[10px] uppercase font-bold text-stone-500">Unjust Public Drain</div>
+                <div className="text-[10px] uppercase font-bold text-stone-500">
+                  Unjust Public Drain
+                </div>
                 <div className="text-sm font-mono font-bold text-rose-600 mt-0.5">
                   {formatINR(Math.max(0, sim.costExcess) + sim.ghostWasteINR)}
                 </div>
               </div>
               <div className="bg-stone-50 p-3 rounded-xl border border-stone-200">
-                <div className="text-[10px] uppercase font-bold text-stone-500">Active Violations</div>
+                <div className="text-[10px] uppercase font-bold text-stone-500">
+                  Active Violations
+                </div>
                 <div className="text-sm font-mono font-bold text-brand-dark mt-0.5">
                   {sim.flags.length} Red Flags
                 </div>
@@ -294,7 +333,8 @@ export default function ScamSimulator({ project }) {
           <div className="glass-card p-5 border-stone-200 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-brand-dark uppercase tracking-wider flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-600" /> Real-Time Triggered Flags ({sim.flags.length})
+                <Zap className="w-3.5 h-3.5 text-amber-600" /> Real-Time Triggered Flags (
+                {sim.flags.length})
               </span>
             </div>
 
@@ -316,7 +356,9 @@ export default function ScamSimulator({ project }) {
                   >
                     <div className="flex items-center justify-between text-[10px] font-mono font-bold mb-1">
                       <span className="uppercase text-stone-700">{flag.type}</span>
-                      <span className={flag.severity === 'red' ? 'text-rose-600' : 'text-amber-600'}>
+                      <span
+                        className={flag.severity === 'red' ? 'text-rose-600' : 'text-amber-600'}
+                      >
                         {flag.severity.toUpperCase()}
                       </span>
                     </div>
@@ -326,9 +368,7 @@ export default function ScamSimulator({ project }) {
               </div>
             )}
           </div>
-
         </div>
-
       </div>
     </div>
   );

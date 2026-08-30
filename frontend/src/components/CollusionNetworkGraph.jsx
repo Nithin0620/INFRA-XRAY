@@ -12,7 +12,7 @@ import {
   ExternalLink,
   ShieldAlert,
   HelpCircle,
-  Network
+  Network,
 } from 'lucide-react';
 import { formatINR } from '../lib/utils';
 
@@ -64,12 +64,14 @@ const EntityNode = ({ data }) => {
       }`}
     >
       <Handle type="target" position={Position.Top} className="!bg-stone-400 !w-2.5 !h-2.5" />
-      
+
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2">
           <div
             className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-              isFlagged ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-stone-100 text-stone-700'
+              isFlagged
+                ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                : 'bg-stone-100 text-stone-700'
             }`}
           >
             <Icon className="w-4 h-4" />
@@ -93,7 +95,9 @@ const EntityNode = ({ data }) => {
       </div>
 
       <div className="mt-2 text-xs font-semibold text-brand-dark bg-stone-50 p-2 rounded-xl border border-stone-200/80">
-        <div className="text-[10px] text-brand-muted font-normal uppercase tracking-wider">{data.metricLabel}</div>
+        <div className="text-[10px] text-brand-muted font-normal uppercase tracking-wider">
+          {data.metricLabel}
+        </div>
         <div className="truncate font-mono">{data.metricValue}</div>
       </div>
 
@@ -283,14 +287,19 @@ export default function CollusionNetworkGraph({ project }) {
           <div>
             <h3 className="text-base font-bold text-brand-dark flex items-center gap-2">
               Procurement Collusion & Shell Contractor Network
-              <span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${
-                isCritical ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-              }`}>
+              <span
+                className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${
+                  isCritical
+                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                    : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                }`}
+              >
                 {isCritical ? 'Cartel Ring Detected' : 'No Collusion Detected'}
               </span>
             </h3>
             <p className="text-xs text-brand-muted mt-0.5">
-              Correlates GSTIN IDs, Director PANs, IP subnets, and escrow accounts between winning and dummy cover bidders.
+              Correlates GSTIN IDs, Director PANs, IP subnets, and escrow accounts between winning
+              and dummy cover bidders.
             </p>
           </div>
         </div>
@@ -303,7 +312,9 @@ export default function CollusionNetworkGraph({ project }) {
           </div>
           <div className="glass-card px-3.5 py-1.5 border-stone-200 text-xs flex items-center gap-2 bg-stone-50">
             <span className="text-brand-muted">Shared Director Links:</span>
-            <span className={`font-mono font-bold ${isCritical ? 'text-rose-600' : 'text-emerald-600'}`}>
+            <span
+              className={`font-mono font-bold ${isCritical ? 'text-rose-600' : 'text-emerald-600'}`}
+            >
               {isCritical ? '1 Common Beneficial Owner' : '0 Links'}
             </span>
           </div>
@@ -345,10 +356,15 @@ export default function CollusionNetworkGraph({ project }) {
                 CAG / CVC High-Risk Alert: Bid Rigging & Artificial Competition Ring
               </h4>
               <p className="text-xs text-rose-800 leading-relaxed">
-                The winning contractor (<strong>{contractorName}</strong>) and dummy cover bidder (<strong>Vanguard Infra</strong>) share common Director <strong>R. K. Sharma (DIN: 08492011)</strong>. Furthermore, both bids originated from the exact same corporate IP address, and financial disbursements are routed to the same beneficial escrow account.
+                The winning contractor (<strong>{contractorName}</strong>) and dummy cover bidder (
+                <strong>Vanguard Infra</strong>) share common Director{' '}
+                <strong>R. K. Sharma (DIN: 08492011)</strong>. Furthermore, both bids originated
+                from the exact same corporate IP address, and financial disbursements are routed to
+                the same beneficial escrow account.
               </p>
               <div className="text-[11px] font-mono text-rose-700 pt-1 font-semibold">
-                Violation: Central Vigilance Commission (CVC) Anti-Collusion Guidelines Section 4.2 & Competition Act Section 3(3)(d).
+                Violation: Central Vigilance Commission (CVC) Anti-Collusion Guidelines Section 4.2
+                & Competition Act Section 3(3)(d).
               </div>
             </div>
           </div>

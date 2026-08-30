@@ -69,7 +69,8 @@ export default function ColdStartBanner() {
               </div>
               <p className="text-xs text-stone-600 mt-1 leading-relaxed">
                 Our free-tier cloud backend spins down after inactivity. Please allow{' '}
-                <strong className="text-amber-900 font-bold">1–2 minutes</strong> for the instance to warm up. Sorry for the brief wait!
+                <strong className="text-amber-900 font-bold">1–2 minutes</strong> for the instance
+                to warm up. Sorry for the brief wait!
               </p>
             </div>
           </div>

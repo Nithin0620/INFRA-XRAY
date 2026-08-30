@@ -3,10 +3,9 @@ import axios from 'axios';
 // Resolve API base URL:
 // 1. If VITE_API_URL is provided in .env / Cloudflare, use it (e.g., https://infra-xray.onrender.com)
 // 2. If running locally in development and no .env is set, fallback to http://localhost:3001/api (or /api via Vite proxy)
-const rawBaseUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-const BASE_URL = rawBaseUrl
-  ? `${rawBaseUrl.replace(/\/+$/, '')}/api`
-  : '/api';
+const rawBaseUrl =
+  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+const BASE_URL = rawBaseUrl ? `${rawBaseUrl.replace(/\/+$/, '')}/api` : '/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
