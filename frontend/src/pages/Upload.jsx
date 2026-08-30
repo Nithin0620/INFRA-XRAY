@@ -13,8 +13,9 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import axios from 'axios';
+import { BASE_URL, WS_BASE_URL } from '../services/api';
 
-const API = 'http://localhost:3001/api';
+const API = BASE_URL;
 
 const PROJECT_TYPES = ['road', 'bridge', 'building', 'pipeline', 'dam', 'other'];
 const STATES = [
@@ -192,7 +193,7 @@ export default function UploadPage() {
     // Connect to WebSocket for live event streaming
     let ws;
     try {
-      ws = new WebSocket('ws://localhost:3001/ws');
+      ws = new WebSocket(WS_BASE_URL);
       ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'subscribe', projectId }));
       };

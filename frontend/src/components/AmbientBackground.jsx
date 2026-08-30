@@ -1,11 +1,11 @@
+import { memo, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'motion/react';
-import { useEffect } from 'react';
 
 function Layer({ mx, my, depth, children, style }) {
-  const x = useTransform(mx, (v) => v * depth * 60);
-  const y = useTransform(my, (v) => v * depth * 50);
+  const x = useTransform(mx, (v) => v * depth * 50);
+  const y = useTransform(my, (v) => v * depth * 40);
   return (
-    <motion.div className="absolute inset-0" style={{ x, y, ...style }}>
+    <motion.div className="absolute inset-0 transform-gpu will-change-transform" style={{ x, y, ...style }}>
       {children}
     </motion.div>
   );
@@ -23,7 +23,7 @@ const CUBE_FACES = [
 function Cube3D({ size = 90, className = '', duration = 24, left = '0%', top = '0%', z = 0 }) {
   return (
     <div
-      className="absolute"
+      className="absolute transform-gpu"
       style={{
         left,
         top,
@@ -55,7 +55,7 @@ function Cube3D({ size = 90, className = '', duration = 24, left = '0%', top = '
 
 function GyroRing({ size = 260, className = '', duration = 26, top = '22%', left = '8%' }) {
   return (
-    <div className="absolute" style={{ top, left, transform: 'rotateX(68deg) rotateY(-18deg)' }}>
+    <div className="absolute transform-gpu" style={{ top, left, transform: 'rotateX(68deg) rotateY(-18deg)' }}>
       <motion.div
         className="relative"
         style={{ width: size, height: size, transformStyle: 'preserve-3d' }}
@@ -73,7 +73,7 @@ function GyroRing({ size = 260, className = '', duration = 26, top = '22%', left
 function FloatBar({ className = '', duration = 7, top, left, w = 120, h = 18, delay = 0 }) {
   return (
     <motion.div
-      className="absolute"
+      className="absolute transform-gpu"
       style={{ top, left, width: w, height: h }}
       animate={{ y: [0, -26, 0], rotate: [0, 6, 0] }}
       transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
@@ -105,11 +105,11 @@ function Particles({ count = 18 }) {
 
   if (reduce) return null;
   return (
-    <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {dots.map((d) => (
         <motion.span
           key={d.id}
-          className="absolute rounded-full bg-brand-accent"
+          className="absolute rounded-full bg-brand-accent transform-gpu"
           style={{
             left: d.left,
             top: d.top,
@@ -130,7 +130,7 @@ function Scanline({ duration = 9, delay = 1.5, className = '' }) {
   if (reduce) return null;
   return (
     <motion.div
-      className={`absolute left-0 right-0 h-[3px] scanline-grad ${className}`}
+      className={`absolute left-0 right-0 h-[3px] scanline-grad transform-gpu ${className}`}
       initial={{ top: '-5%', opacity: 0 }}
       animate={{ top: ['-5%', '105%', '105%'], opacity: [0, 1, 0] }}
       transition={{
@@ -145,25 +145,34 @@ function Scanline({ duration = 9, delay = 1.5, className = '' }) {
   );
 }
 
-export default function AmbientBackground() {
+function AmbientBackground() {
   const reduce = useReducedMotion();
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 40, damping: 18 });
-  const sy = useSpring(my, { stiffness: 40, damping: 18 });
+  const sx = useSpring(mx, { stiffness: 50, damping: 22 });
+  const sy = useSpring(my, { stiffness: 50, damping: 22 });
 
-  const sceneRotX = useTransform(sy, (v) => v * 7);
-  const sceneRotY = useTransform(sx, (v) => v * 9);
+  const sceneRotX = useTransform(sy, (v) => v * 5);
+  const sceneRotY = useTransform(sx, (v) => v * 7);
+
+  const rafRef = useRef(null);
 
   useEffect(() => {
     if (reduce) return;
     const onMove = (e) => {
-      mx.set(e.clientX / window.innerWidth - 0.5);
-      my.set(e.clientY / window.innerHeight - 0.5);
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        mx.set(e.clientX / window.innerWidth - 0.5);
+        my.set(e.clientY / window.innerHeight - 0.5);
+        rafRef.current = null;
+      });
     };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [reduce, mx, my]);
 
   return (
@@ -173,7 +182,7 @@ export default function AmbientBackground() {
       {/* ===== 3D WORLD ===== */}
       <div className="perspective-3d absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute inset-0"
+          className="absolute inset-0 transform-gpu will-change-transform"
           style={{
             transformStyle: 'preserve-3d',
             rotateX: reduce ? 0 : sceneRotX,
@@ -182,13 +191,13 @@ export default function AmbientBackground() {
         >
           {/* Neon gradient blobs at different parallax depths */}
           <Layer mx={sx} my={sy} depth={1.2}>
-            <div className="absolute -top-[15%] -left-[10%] w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-amber-100/60 via-orange-50/40 to-transparent blur-3xl" />
+            <div className="absolute -top-[15%] -left-[10%] w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-amber-100/60 via-orange-50/40 to-transparent blur-2xl transform-gpu" />
           </Layer>
           <Layer mx={sx} my={sy} depth={0.6}>
-            <div className="absolute top-[35%] -right-[15%] w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-brand-accent/20 via-stone-200/60 to-transparent blur-3xl" />
+            <div className="absolute top-[35%] -right-[15%] w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-brand-accent/20 via-stone-200/60 to-transparent blur-2xl transform-gpu" />
           </Layer>
           <Layer mx={sx} my={sy} depth={1.8}>
-            <div className="absolute -bottom-[20%] left-[25%] w-[600px] h-[600px] rounded-full bg-gradient-to-t from-stone-300/40 via-amber-50/30 to-transparent blur-2xl" />
+            <div className="absolute -bottom-[20%] left-[25%] w-[600px] h-[600px] rounded-full bg-gradient-to-t from-stone-300/40 via-amber-50/30 to-transparent blur-xl transform-gpu" />
           </Layer>
 
           {/* 3D gyroscope rings */}
@@ -246,7 +255,7 @@ export default function AmbientBackground() {
           {/* Floating glass prisms */}
           <Layer mx={sx} my={sy} depth={1.3}>
             <FloatBar
-              className="bg-gradient-to-r from-brand-accent/10 via-brand-accent/30 to-transparent border border-brand-accent/20 backdrop-blur-[2px]"
+              className="bg-gradient-to-r from-brand-accent/10 via-brand-accent/30 to-transparent border border-brand-accent/20"
               top="58%"
               left="10%"
               w={150}
@@ -267,7 +276,7 @@ export default function AmbientBackground() {
 
           {/* Holographic floor grid */}
           <motion.div
-            className="absolute inset-0"
+            className="absolute inset-0 transform-gpu will-change-transform"
             style={{ transform: 'translateY(20vh)', transformStyle: 'preserve-3d' }}
           >
             <div className="absolute left-1/2 top-1/2 w-[240vw] h-[240vh] -translate-x-1/2 -translate-y-1/2 grid-floor" />
@@ -288,10 +297,12 @@ export default function AmbientBackground() {
       />
 
       {/* Cinematic scanlines */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <Scanline duration={10} delay={2} />
         <Scanline duration={16} delay={7} className="opacity-40" />
       </div>
     </div>
   );
 }
+
+export default memo(AmbientBackground);

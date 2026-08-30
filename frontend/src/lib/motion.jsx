@@ -85,18 +85,20 @@ export function Item({ children, y = 22, className }) {
 
 export function AnimatedNumber({ value, format = (v) => v, duration = 1.2, className }) {
   const ref = useRef(null);
+  const formatRef = useRef(format);
+  formatRef.current = format;
   const mv = useMotionValue(0);
 
   useEffect(() => {
     const controls = animate(mv, value, { duration, ease: CINEMATIC });
     const unsubscribe = mv.on('change', (v) => {
-      if (ref.current) ref.current.textContent = format(v);
+      if (ref.current) ref.current.textContent = formatRef.current(v);
     });
     return () => {
       controls.stop();
       unsubscribe();
     };
-  }, [value, duration, format, mv]);
+  }, [value, duration, mv]);
 
   return (
     <span ref={ref} className={className}>

@@ -26,44 +26,17 @@ function MapViewController({ center, bounds, zoom = 14 }) {
   return null;
 }
 
-// Synchronizes pan and zoom from Master map to Follower map
-function MapSyncWatcher({ onMapMove }) {
-  const map = useMap();
-  useEffect(() => {
-    const handleMove = () => {
-      onMapMove(map.getCenter(), map.getZoom());
-    };
-    map.on('move', handleMove);
-    map.on('zoom', handleMove);
-    return () => {
-      map.off('move', handleMove);
-      map.off('zoom', handleMove);
-    };
-  }, [map, onMapMove]);
-  return null;
-}
-
-// Controller for follower map
-function FollowerController({ center, zoom }) {
-  const map = useMap();
-  useEffect(() => {
-    if (center) {
-      map.setView(center, zoom, { animate: false });
-    }
-  }, [center, zoom, map]);
-  return null;
-}
-
-// Single-Map Tile Overlay Wiper (Applies CSS clip-path directly onto the Top TileLayer pane)
+// Single-Map Tile Overlay Wiper (Applies CSS clip-path directly onto the satellitePane)
 function TileWipeController({ position }) {
   const map = useMap();
   useEffect(() => {
-    // Leaflet overlay pane or custom tile pane
-    const topTileLayerElement = document.getElementById('wipe-satellite-layer');
-    if (topTileLayerElement) {
-      topTileLayerElement.style.clipPath = `polygon(${position}% 0, 100% 0, 100% 100%, ${position}% 100%)`;
-      topTileLayerElement.style.webkitClipPath = `polygon(${position}% 0, 100% 0, 100% 100%, ${position}% 100%)`;
+    let pane = map.getPane('satellitePane');
+    if (!pane) {
+      pane = map.createPane('satellitePane');
+      pane.style.zIndex = '450';
     }
+    pane.style.clipPath = `polygon(${position}% 0, 100% 0, 100% 100%, ${position}% 100%)`;
+    pane.style.webkitClipPath = `polygon(${position}% 0, 100% 0, 100% 100%, ${position}% 100%)`;
   }, [position, map]);
   return null;
 }
@@ -93,16 +66,8 @@ export default function SatelliteComparison({ project }) {
     }
   }
 
-  const [currentCenter, setCurrentCenter] = useState(center);
-  const [currentZoom, setCurrentZoom] = useState(14);
-
   const startDate = project?.start_date || '2024-03-01';
   const deadlineDate = project?.deadline || '2025-06-30';
-
-  const handleMapMove = useCallback((newCenter, newZoom) => {
-    setCurrentCenter([newCenter.lat, newCenter.lng]);
-    setCurrentZoom(newZoom);
-  }, []);
 
   const updateSliderPos = useCallback((clientX) => {
     if (!containerRef.current) return;
@@ -114,9 +79,13 @@ export default function SatelliteComparison({ project }) {
 
   // Global drag event listeners for ultra-smooth drag
   useEffect(() => {
+    let raf = null;
     const handleWindowMouseMove = (e) => {
       if (isDragging) {
-        updateSliderPos(e.clientX);
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          updateSliderPos(e.clientX);
+        });
       }
     };
     const handleWindowMouseUp = () => {
@@ -126,16 +95,20 @@ export default function SatelliteComparison({ project }) {
     };
     const handleWindowTouchMove = (e) => {
       if (isDragging && e.touches.length > 0) {
-        updateSliderPos(e.touches[0].clientX);
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          updateSliderPos(e.touches[0].clientX);
+        });
       }
     };
 
-    window.addEventListener('mousemove', handleWindowMouseMove);
+    window.addEventListener('mousemove', handleWindowMouseMove, { passive: true });
     window.addEventListener('mouseup', handleWindowMouseUp);
-    window.addEventListener('touchmove', handleWindowTouchMove);
+    window.addEventListener('touchmove', handleWindowTouchMove, { passive: true });
     window.addEventListener('touchend', handleWindowMouseUp);
 
     return () => {
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('mousemove', handleWindowMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
       window.removeEventListener('touchmove', handleWindowTouchMove);
@@ -247,15 +220,13 @@ export default function SatelliteComparison({ project }) {
               zIndex={1}
             />
 
-            {/* Layer 2: Top Layer (High-Resolution Satellite Orthophoto) clipped by sliderPosition */}
-            <div id="wipe-satellite-layer" className="leaflet-top-satellite">
-              <TileLayer
-                attribution="&copy; Satellite"
-                url={satelliteTileUrl}
-                maxZoom={19}
-                zIndex={10}
-              />
-            </div>
+            {/* Layer 2: Top Layer (High-Resolution Satellite Orthophoto) clipped by satellitePane */}
+            <TileLayer
+              attribution="&copy; Satellite"
+              url={satelliteTileUrl}
+              maxZoom={19}
+              pane="satellitePane"
+            />
 
             <MapViewController center={center} bounds={bounds} zoom={14} />
             <TileWipeController position={sliderPosition} />
@@ -375,7 +346,6 @@ export default function SatelliteComparison({ project }) {
             >
               <TileLayer attribution="&copy; CARTO" url={baselineTileUrl} maxZoom={19} />
               <MapViewController center={center} bounds={bounds} zoom={14} />
-              <MapSyncWatcher onMapMove={handleMapMove} />
 
               {/* Sanctioned Blueprint Corridor */}
               {coords.length > 0 && isPolygon && (
@@ -416,8 +386,8 @@ export default function SatelliteComparison({ project }) {
             </div>
 
             <MapContainer
-              center={currentCenter}
-              zoom={currentZoom}
+              center={center}
+              zoom={14}
               style={{ height: '100%', width: '100%', background: '#0a0a0a' }}
               scrollWheelZoom={true}
               dragging={true}
@@ -427,7 +397,7 @@ export default function SatelliteComparison({ project }) {
                 url={satelliteTileUrl}
                 maxZoom={19}
               />
-              <FollowerController center={currentCenter} zoom={currentZoom} />
+              <MapViewController center={center} bounds={bounds} zoom={14} />
 
               {/* Verified Alignment on Satellite */}
               {coords.length > 0 && isPolygon && (

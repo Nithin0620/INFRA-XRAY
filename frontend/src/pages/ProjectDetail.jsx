@@ -24,7 +24,7 @@ import {
   Network,
   Sliders,
 } from 'lucide-react';
-import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
+import { fetchProject, generateChecklist, submitFeedback, fetchFeedback, DATA_BASE_URL } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
 import FlagCard from '../components/FlagCard';
 import ProjectMap from '../components/ProjectMap';
@@ -370,7 +370,7 @@ export default function ProjectDetail() {
                       >
                         <div className="h-32 bg-white overflow-hidden relative">
                           <img
-                            src={`http://localhost:3001/data/${ph.filepath}`}
+                            src={`${DATA_BASE_URL}/${ph.filepath}`}
                             alt={ph.photo_id}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {

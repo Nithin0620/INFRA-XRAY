@@ -70,18 +70,31 @@ export default function DigitalTwinViewer({ project }) {
 
   const defects = DEFECTS;
 
-  // Canvas 3D rendering loop (Orthographic projection engine with LiDAR point-clouds & structural meshes)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let angleY = 0;
-    let angleX = 0.35; // Slight isometric pitch
+  // Track dynamic interactive parameters in ref to avoid recreating the 3D canvas render loop
+  const stateRef = useRef({
+    renderMode,
+    isPaused,
+    rotationSpeed,
+    sliceDepth,
+    selectedAnomaly,
+    isCritical,
+  });
 
-    // Generate procedural 3D model vertices based on project category
+  useEffect(() => {
+    stateRef.current = {
+      renderMode,
+      isPaused,
+      rotationSpeed,
+      sliceDepth,
+      selectedAnomaly,
+      isCritical,
+    };
+  }, [renderMode, isPaused, rotationSpeed, sliceDepth, selectedAnomaly, isCritical]);
+
+  // Generate procedural 3D model vertices once based on project category
+  const modelPoints = useMemo(() => {
     const numPoints = isBuilding ? 450 : isBridge ? 600 : 700;
-    const modelPoints = [];
+    const points = [];
 
     // Road/Bridge Corridor Geometry
     for (let i = 0; i < numPoints; i++) {
@@ -93,7 +106,7 @@ export default function DigitalTwinViewer({ project }) {
         const floor = Math.floor(Math.random() * 5);
         const w = (Math.random() - 0.5) * 140;
         const d = (Math.random() - 0.5) * 100;
-        modelPoints.push({
+        points.push({
           x: w,
           y: floor * 30 - 60 + (Math.random() - 0.5) * 4,
           z: d,
@@ -104,7 +117,7 @@ export default function DigitalTwinViewer({ project }) {
         // Bridge piers and suspension arches
         const archY = Math.sin((u + 1) * Math.PI) * -50;
         const lateralZ = (Math.random() - 0.5) * 60;
-        modelPoints.push({
+        points.push({
           x: lengthX,
           y: archY + (Math.random() - 0.5) * 15,
           z: lateralZ,
@@ -115,7 +128,7 @@ export default function DigitalTwinViewer({ project }) {
         // Highway road ribbon + sub-base layers
         const layerY = (Math.random() - 0.5) * 25;
         const laneZ = (Math.random() - 0.5) * 70;
-        modelPoints.push({
+        points.push({
           x: lengthX,
           y: layerY,
           z: laneZ,
@@ -124,16 +137,36 @@ export default function DigitalTwinViewer({ project }) {
         });
       }
     }
+    return points;
+  }, [isBuilding, isBridge]);
+
+  // Canvas 3D rendering loop (Orthographic projection engine with LiDAR point-clouds & structural meshes)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let angleY = 0;
+    const angleX = 0.35; // Slight isometric pitch
 
     const render = () => {
+      const {
+        renderMode: curMode,
+        isPaused: curPaused,
+        rotationSpeed: curSpeed,
+        sliceDepth: curSlice,
+        selectedAnomaly: curSelected,
+        isCritical: curCritical,
+      } = stateRef.current;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const width = canvas.width;
       const height = canvas.height;
       const cx = width / 2;
       const cy = height / 2 + 10;
 
-      if (!isPaused) {
-        angleY += 0.008 * rotationSpeed;
+      if (!curPaused) {
+        angleY += 0.008 * curSpeed;
       }
 
       const cosY = Math.cos(angleY);
@@ -168,7 +201,7 @@ export default function DigitalTwinViewer({ project }) {
 
       // Filter and Project Model Points
       const projected = [];
-      const depthThreshold = (sliceDepth / 100) * 440 - 220;
+      const depthThreshold = (curSlice / 100) * 440 - 220;
 
       modelPoints.forEach((pt) => {
         if (pt.x > depthThreshold) return; // depth slice cutoff
@@ -193,16 +226,16 @@ export default function DigitalTwinViewer({ project }) {
       projected.sort((a, b) => b.depth - a.depth);
 
       // Render based on selected 3D visualization mode
-      if (renderMode === 'pointcloud' || renderMode === 'thermal' || renderMode === 'stress') {
+      if (curMode === 'pointcloud' || curMode === 'thermal' || curMode === 'stress') {
         projected.forEach((pt) => {
           ctx.beginPath();
           const size = Math.max(1.5, 3.2 - pt.depth * 0.015);
           ctx.arc(pt.sx, pt.sy, size, 0, Math.PI * 2);
 
-          if (renderMode === 'pointcloud') {
+          if (curMode === 'pointcloud') {
             // LiDAR Reflectance (Cyan to Emerald)
             ctx.fillStyle = `rgba(16, 185, 129, ${Math.max(0.3, pt.density)})`;
-          } else if (renderMode === 'thermal') {
+          } else if (curMode === 'thermal') {
             // Thermal Dissipation (Blue -> Yellow -> Red)
             const heat = pt.stress;
             ctx.fillStyle =
@@ -211,7 +244,7 @@ export default function DigitalTwinViewer({ project }) {
                 : heat > 0.3
                   ? 'rgba(245, 158, 11, 0.8)'
                   : 'rgba(56, 189, 248, 0.7)';
-          } else if (renderMode === 'stress') {
+          } else if (curMode === 'stress') {
             // FEA Structural Stress Gradient
             const str = pt.stress;
             ctx.fillStyle = str > 0.5 ? 'rgba(220, 38, 38, 0.9)' : 'rgba(99, 102, 241, 0.65)';
@@ -221,7 +254,7 @@ export default function DigitalTwinViewer({ project }) {
       } else {
         // Wireframe Ribbons / Structural Edges
         ctx.lineWidth = 1.2;
-        ctx.strokeStyle = isCritical ? 'rgba(220, 38, 38, 0.35)' : 'rgba(30, 41, 59, 0.3)';
+        ctx.strokeStyle = curCritical ? 'rgba(220, 38, 38, 0.35)' : 'rgba(30, 41, 59, 0.3)';
 
         for (let i = 0; i < projected.length - 1; i += 2) {
           const p1 = projected[i];
@@ -236,7 +269,7 @@ export default function DigitalTwinViewer({ project }) {
 
         // Draw outer bounding structural contour
         projected.forEach((pt) => {
-          ctx.fillStyle = isCritical ? 'rgba(220, 38, 38, 0.6)' : 'rgba(15, 23, 42, 0.6)';
+          ctx.fillStyle = curCritical ? 'rgba(220, 38, 38, 0.6)' : 'rgba(15, 23, 42, 0.6)';
           ctx.fillRect(pt.sx - 1.5, pt.sy - 1.5, 3, 3);
         });
       }
@@ -254,7 +287,7 @@ export default function DigitalTwinViewer({ project }) {
         const sx = cx + rx * scale;
         const sy = cy + ry * scale;
 
-        const isSel = selectedAnomaly?.id === def.id;
+        const isSel = curSelected?.id === def.id;
 
         // Pulsing Anomaly Halo
         ctx.beginPath();
@@ -286,16 +319,7 @@ export default function DigitalTwinViewer({ project }) {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [
-    renderMode,
-    isPaused,
-    rotationSpeed,
-    sliceDepth,
-    isCritical,
-    isBuilding,
-    isBridge,
-    selectedAnomaly,
-  ]);
+  }, [modelPoints]);
 
   return (
     <div className="space-y-6">

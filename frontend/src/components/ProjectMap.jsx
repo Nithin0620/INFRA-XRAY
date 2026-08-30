@@ -1,8 +1,8 @@
-/* eslint-disable no-unused-vars */
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { categoryIcon, riskScoreColor, formatINR } from '../lib/utils';
+import { DATA_BASE_URL } from '../services/api';
 import { Camera, AlertCircle, CheckCircle } from 'lucide-react';
 
 // Custom DivIcon for Project Markers
@@ -235,7 +235,7 @@ export default function ProjectMap({
                   {photo.filepath && (
                     <div className="mt-2 rounded overflow-hidden border border-gray-200">
                       <img
-                        src={`http://localhost:3001/data/${photo.filepath}`}
+                        src={`${DATA_BASE_URL}/${photo.filepath}`}
                         alt={photo.photo_id}
                         className="w-full h-24 object-cover"
                         onError={(e) => {
