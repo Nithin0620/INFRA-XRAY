@@ -292,13 +292,21 @@ export default function Dashboard() {
                 ].map(({ key, label }) => (
                   <th
                     key={key}
-                    onClick={() => handleSort(key)}
-                    className="px-5 py-3 text-left cursor-pointer hover:text-brand-text transition-colors select-none"
+                    aria-sort={
+                      sortKey === key ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none'
+                    }
+                    className="px-5 py-3 text-left transition-colors select-none"
                   >
-                    {label}
-                    {sortKey === key && (
-                      <span className="ml-1">{sortDir === 'desc' ? '↓' : '↑'}</span>
-                    )}
+                    <button
+                      onClick={() => handleSort(key)}
+                      className="flex items-center hover:text-brand-text focus-visible:ring-2 focus-visible:outline-none rounded px-1 -ml-1 transition-colors w-full text-left font-bold uppercase"
+                      aria-label={`Sort by ${label}`}
+                    >
+                      {label}
+                      {sortKey === key && (
+                        <span className="ml-1">{sortDir === 'desc' ? '↓' : '↑'}</span>
+                      )}
+                    </button>
                   </th>
                 ))}
                 <th className="px-5 py-3 w-10"></th>
