@@ -328,9 +328,9 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
   }, [project, extracted, flags]);
 
   return (
-    <div className="w-full h-[460px] rounded-2xl overflow-hidden border border-brand-100 bg-brand-surface/60 relative">
+    <div className="w-full h-[460px] rounded-3xl overflow-hidden border border-stone-200 bg-white/90 shadow-md relative">
       <div className="absolute top-3 left-4 z-10 flex items-center gap-2 pointer-events-none">
-        <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider bg-white/60 px-2.5 py-1 rounded-full border border-brand-100 backdrop-blur-md">
+        <span className="text-xs font-semibold text-brand-dark uppercase tracking-wider bg-white/90 px-3 py-1.5 rounded-full border border-stone-200 shadow-sm backdrop-blur-md">
           Interactive Evidence Traceability Graph
         </span>
       </div>
@@ -341,14 +341,13 @@ export default function EvidenceGraph({ project, extracted, flags = [] }) {
         nodeTypes={nodeTypes}
         fitView
         attributionPosition="bottom-right"
-        className="react-flow-dark"
       >
-        <Background color="#374151" gap={20} size={1} />
-        <Controls className="!bg-white !border-brand-100 !text-brand-text !rounded-xl !shadow-xl" />
+        <Background color="#cbd5e1" gap={20} size={1} />
+        <Controls className="!bg-white !border-stone-200 !text-brand-dark !rounded-2xl !shadow-lg" />
         <MiniMap
-          nodeColor={(node) => (node.data?.hasFlag ? '#ef4444' : '#3b82f6')}
-          className="!bg-white/90 !border !border-brand-100 !rounded-xl overflow-hidden"
-          maskColor="rgba(0, 0, 0, 0.7)"
+          nodeColor={(node) => (node.data?.hasFlag ? '#ef4444' : '#905831')}
+          className="!bg-white/95 !border !border-stone-200 !rounded-2xl overflow-hidden shadow-md"
+          maskColor="rgba(240, 240, 240, 0.7)"
         />
       </ReactFlow>
     </div>

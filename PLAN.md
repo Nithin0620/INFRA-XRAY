@@ -119,3 +119,28 @@ INFRA-XRAY/
 | proj_004 | Bridge over Mahanadi | Odisha | bridge | DATE INCONSISTENCY |
 | proj_005 | Water Pipeline | UP | pipeline | MODERATE MISMATCH (400m deviation) |
 | proj_006 | Govt Office Building | Punjab | building | CLEAN |
+
+---
+
+## Extraordinary Innovations Roadmap (Next Iterations)
+
+### 1. Satellite & Multi-Temporal Surface Before/After Comparison
+* **Status**: 🚀 Implementing
+* **Description**: Interactive wipe/swipe slider comparing baseline pre-construction multi-spectral satellite imagery (Sentinel-2 / high-res optical) against the post-construction verified state. Detects vegetation displacement, pavement spectral signature, and ghost infrastructure where public money was billed but ground remains undisturbed.
+
+### 2. 3D Digital Twin & LiDAR / Point Cloud Viewer
+* **Status**: ✅ Implemented
+* **Description**: Interactive 3D Digital Twin & LiDAR volumetric scanner directly embedded in the project details. Allows auditors to perform 360-degree flythroughs of bridges, roads, and civil structures with 3D defect annotations (crack depths, surface anomalies, ultrasound density, and FEA stress maps) projected directly on 3D meshes with depth slicing.
+
+### 3. "Ghost Contractor" & Shell Company Collusion Network
+* **Status**: ✅ Implemented
+* **Description**: Interactive entity graph correlating GSTIN tax IDs, director PANs, common bank accounts, and IP registration addresses to detect cartel bidding, circular shell companies, and conflict-of-interest kickbacks among competing tender bidders.
+
+### 4. 1-Click "CAG / Anti-Corruption Bureau" Forensic Audit PDF Exporter
+* **Status**: ✅ Implemented
+* **Description**: Court-ready forensic dossier generator formatted with national oversight watermarks, SHA-256 evidence chain of custody, multi-stage physical reconciliation ledgers, and 1-click browser PDF printing.
+
+### 5. Live Scam Simulation & Anomaly Sandbox
+* **Status**: ✅ Implemented
+* **Description**: Interactive "What-If" stress-testing sandbox where investigators can tweak tender parameters (inject invoice rate inflation, ghost physical unbuilt deficits, GPS geofence displacement, or dummy cartel bidding premiums) to observe how anomaly scores, public fund waste metrics, and red flags trigger in real time.
+

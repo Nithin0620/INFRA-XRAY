@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   FileText,
@@ -19,6 +19,10 @@ import {
   HelpCircle,
   CheckCircle2,
   Download,
+  Eye,
+  Box,
+  Network,
+  Sliders,
 } from 'lucide-react';
 import { fetchProject, generateChecklist, submitFeedback, fetchFeedback } from '../services/api';
 import RiskGauge from '../components/RiskGauge';
@@ -26,6 +30,11 @@ import FlagCard from '../components/FlagCard';
 import ProjectMap from '../components/ProjectMap';
 import EvidenceGraph from '../components/EvidenceGraph';
 import ProjectAnalyticsChart from '../components/ProjectAnalyticsChart';
+import SatelliteComparison from '../components/SatelliteComparison';
+import DigitalTwinViewer from '../components/DigitalTwinViewer';
+import CollusionNetworkGraph from '../components/CollusionNetworkGraph';
+import ForensicReportModal from '../components/ForensicReportModal';
+import ScamSimulator from '../components/ScamSimulator';
 import { formatINR, cn } from '../lib/utils';
 
 const funnelStages = [
@@ -74,7 +83,8 @@ export default function ProjectDetail() {
   const [copilotLoading, setCopilotLoading] = useState(false);
   const [feedbackMap, setFeedbackMap] = useState({});
   const [expandedFlags, setExpandedFlags] = useState(true);
-  const [activeTab, setActiveTab] = useState('graph'); // 'graph' | 'analytics' | 'map' | 'photos'
+  const [activeTab, setActiveTab] = useState('collusion'); // 'collusion' | 'satellite' | 'graph' | 'analytics' | 'map'
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     Promise.all([fetchProject(id), fetchFeedback(id)])
@@ -159,40 +169,55 @@ export default function ProjectDetail() {
       {/* Back link */}
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand-text transition-colors mb-6"
+        className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-muted hover:text-brand-dark transition-colors mb-6 group"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to
+        Dashboard
       </Link>
 
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6 mb-6"
+        className="glass-card p-8 mb-8 shadow-xl border-stone-200"
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{project.project_name}</h1>
-            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-brand-muted">
-              <span className="font-mono bg-brand-50 px-2 py-0.5 rounded">{project.tender_id}</span>
+            <h1 className="text-3xl font-bold tracking-tight text-brand-dark">
+              {project.project_name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-brand-muted">
+              <span className="font-mono bg-stone-100 border border-stone-200 text-brand-dark font-medium px-2.5 py-0.5 rounded-lg">
+                {project.tender_id}
+              </span>
               <span>{project.state}</span>
-              <span className="capitalize bg-brand-50 px-2 py-0.5 rounded-full text-xs">
+              <span className="capitalize bg-amber-50 text-brand-accent border border-amber-200 px-3 py-0.5 rounded-full text-xs font-semibold">
                 {project.category}
               </span>
-              <span>{project.contractor_name}</span>
+              <span className="font-medium text-stone-700">{project.contractor_name}</span>
             </div>
-            <div className="mt-2 text-sm text-brand-muted">
+            <div className="mt-3 text-sm text-brand-muted">
               Sanctioned:{' '}
-              <span className="text-brand-text font-medium">
+              <span className="text-brand-text font-bold text-base">
                 {formatINR(project.sanctioned_amount_inr)}
               </span>
               {' · '}
-              {project.sanctioned_quantity} {project.unit}
+              <span className="font-semibold text-brand-dark">
+                {project.sanctioned_quantity} {project.unit}
+              </span>
             </div>
           </div>
-          {riskReport && (
-            <RiskGauge score={riskReport.overall_score} severity={riskReport.severity_label} />
-          )}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-dark hover:bg-stone-800 text-brand-surface text-xs font-semibold uppercase tracking-wider transition-all shadow-md active:scale-95 shrink-0"
+            >
+              <Download className="w-4 h-4 text-amber-400" /> Export Official CAG Dossier
+            </button>
+            {riskReport && (
+              <RiskGauge score={riskReport.overall_score} severity={riskReport.severity_label} />
+            )}
+          </div>
         </div>
       </motion.div>
 
@@ -202,28 +227,45 @@ export default function ProjectDetail() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <h2 className="section-title mb-4">
-            <Shield className="w-5 h-5 text-brand-400" /> Evidence Timeline Funnel
+          <h2 className="section-title mb-4 font-bold text-lg">
+            <Shield className="w-5 h-5 text-brand-accent" /> Evidence Timeline Funnel
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full bg-brand-accent"
+              animate={{ opacity: [1, 0.2, 1], scale: [1, 1.4, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity }}
+            />
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {funnelStages.map(({ key, label, icon: Icon, color }, i) => {
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {funnelStages.map(({ key, label, icon: Icon }, i) => {
               const value = getStageValue(key, extracted);
               return (
                 <motion.div
                   key={key}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 14 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ delay: 0.15 + i * 0.05 }}
-                  className={cn('rounded-xl p-4 border border-brand-50 bg-gradient-to-b', color)}
+                  whileHover={{ y: -5, scale: 1.04 }}
+                  className="glass-card p-5 border border-stone-200/80 shadow-md hover:border-brand-accent/40 transition-colors"
                 >
-                  <Icon className="w-4 h-4 text-brand-muted mb-2" />
-                  <div className="text-xs text-brand-muted uppercase tracking-wider mb-1">
+                  <motion.div
+                    animate={{ rotate: [0, 8, 0] }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      delay: i * 0.4,
+                      ease: 'easeInOut',
+                    }}
+                    className="w-fit"
+                  >
+                    <Icon className="w-5 h-5 text-brand-accent mb-3" />
+                  </motion.div>
+                  <div className="text-[11px] font-bold text-brand-muted uppercase tracking-wider mb-1">
                     {label}
                   </div>
-                  <div className="text-sm font-semibold text-brand-text">
-                    {value || <span className="text-gray-600">Not processed</span>}
+                  <div className="text-sm font-bold text-brand-dark">
+                    {value || <span className="text-stone-400 font-normal">Not processed</span>}
                   </div>
                 </motion.div>
               );
@@ -233,9 +275,12 @@ export default function ProjectDetail() {
       )}
 
       {/* Deep Audit Exploration Tabs */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 border-b border-brand-100 pb-2 mb-4 overflow-x-auto">
+      <div className="mb-8">
+        <div className="flex items-center gap-2 border-b border-stone-200 pb-3 mb-6 overflow-x-auto">
           {[
+            { id: 'simulator', label: 'Scam Stress-Testing Simulator', icon: Sliders },
+            { id: 'collusion', label: 'Procurement Collusion Network', icon: Network },
+            { id: 'satellite', label: 'Satellite Time-Lapse (Sentinel-2)', icon: Eye },
             { id: 'graph', label: 'Evidence Graph (React Flow)', icon: Layers },
             { id: 'analytics', label: 'Financial & Quantity Audits', icon: BarChart2 },
             { id: 'map', label: 'Geospatial Alignment & Site Photos', icon: MapPin },
@@ -243,16 +288,46 @@ export default function ProjectDetail() {
             <button
               key={tabId}
               onClick={() => setActiveTab(tabId)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 ${
+              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors shrink-0 active:scale-95 ${
                 activeTab === tabId
-                  ? 'bg-brand-600 text-brand-text shadow-lg shadow-brand-600/20'
-                  : 'text-brand-muted hover:text-brand-text hover:bg-brand-50'
+                  ? 'text-brand-surface'
+                  : 'text-brand-muted hover:text-brand-dark hover:bg-stone-100'
               }`}
             >
-              <Icon className="w-4 h-4" /> {label}
+              {activeTab === tabId && (
+                <motion.div
+                  layoutId="activeTabPill"
+                  className="absolute inset-0 bg-brand-dark rounded-full shadow-md z-0"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon className="w-4 h-4" /> {label}
+              </span>
             </button>
           ))}
         </div>
+
+        {/* Tab -1: Live Forensic Scam Simulator */}
+        {activeTab === 'simulator' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+            <ScamSimulator project={project} />
+          </motion.div>
+        )}
+
+        {/* Tab 0: Procurement Collusion & Shell Contractor Network */}
+        {activeTab === 'collusion' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+            <CollusionNetworkGraph project={project} />
+          </motion.div>
+        )}
+
+        {/* Tab 1: Satellite Time-Lapse Wipe Comparison */}
+        {activeTab === 'satellite' && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+            <SatelliteComparison project={project} />
+          </motion.div>
+        )}
 
         {/* Tab 1: Evidence Graph */}
         {activeTab === 'graph' && (
@@ -390,14 +465,14 @@ export default function ProjectDetail() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="glass-card p-6 mb-6"
+        className="glass-card p-8 mb-8 shadow-xl border-stone-200"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="section-title">
-            <Bot className="w-5 h-5 text-brand-400" /> AI Inspector Copilot
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="section-title text-base font-bold">
+            <Bot className="w-5 h-5 text-brand-accent" /> AI Inspector Copilot
           </h2>
           {copilot?.llm_generated && (
-            <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">
+            <span className="text-[10px] bg-amber-50 text-brand-accent border border-amber-300 px-3 py-1 rounded-full uppercase tracking-wider font-bold">
               Anthropic Claude Live Intelligence
             </span>
           )}
@@ -407,11 +482,7 @@ export default function ProjectDetail() {
           <button
             onClick={handleCopilot}
             disabled={copilotLoading}
-            className={cn(
-              'flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all',
-              'bg-brand-600 hover:bg-brand-500 text-brand-text shadow-lg shadow-brand-600/20',
-              'disabled:opacity-50 disabled:cursor-not-allowed'
-            )}
+            className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {copilotLoading ? (
               <>
@@ -512,6 +583,16 @@ export default function ProjectDetail() {
           </div>
         )}
       </motion.div>
+
+      {/* 1-Click Forensic CAG Audit Dossier Modal */}
+      {showReportModal && (
+        <ForensicReportModal
+          project={project}
+          extracted={extracted}
+          flags={allFlags}
+          onClose={() => setShowReportModal(false)}
+        />
+      )}
     </div>
   );
 }
