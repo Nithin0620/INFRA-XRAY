@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/purity */
 /* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Layers,
   Box,

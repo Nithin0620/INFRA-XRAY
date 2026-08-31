@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { categoryIcon, riskScoreColor, formatINR } from '../lib/utils';
+import { riskScoreColor, formatINR } from '../lib/utils';
 import { DATA_BASE_URL } from '../services/api';
-import { Camera, AlertCircle, CheckCircle } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 // Custom DivIcon for Project Markers
 export function createProjectIcon(score, isSelected = false) {

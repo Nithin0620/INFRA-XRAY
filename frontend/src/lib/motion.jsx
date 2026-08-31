@@ -86,8 +86,11 @@ export function Item({ children, y = 22, className }) {
 export function AnimatedNumber({ value, format = (v) => v, duration = 1.2, className }) {
   const ref = useRef(null);
   const formatRef = useRef(format);
-  formatRef.current = format;
   const mv = useMotionValue(0);
+
+  useEffect(() => {
+    formatRef.current = format;
+  }, [format]);
 
   useEffect(() => {
     const controls = animate(mv, value, { duration, ease: CINEMATIC });
