@@ -505,7 +505,7 @@ export default function UploadPage() {
               </motion.div>
               <p className="text-brand-text font-medium mb-2">
                 Drag & drop files here, or{' '}
-                <label className="text-brand-accent hover:underline cursor-pointer font-semibold rounded px-0.5">
+                <label className="text-brand-accent hover:underline cursor-pointer font-semibold rounded px-0.5 focus-within:ring-2 focus-within:ring-brand-accent focus-within:outline-none focus-within:ring-offset-1">
                   browse
                   <input
                     type="file"
