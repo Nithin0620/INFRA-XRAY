@@ -5,7 +5,10 @@ function Layer({ mx, my, depth, children, style }) {
   const x = useTransform(mx, (v) => v * depth * 50);
   const y = useTransform(my, (v) => v * depth * 40);
   return (
-    <motion.div className="absolute inset-0 transform-gpu will-change-transform" style={{ x, y, ...style }}>
+    <motion.div
+      className="absolute inset-0 transform-gpu will-change-transform"
+      style={{ x, y, ...style }}
+    >
       {children}
     </motion.div>
   );
@@ -55,7 +58,10 @@ function Cube3D({ size = 90, className = '', duration = 24, left = '0%', top = '
 
 function GyroRing({ size = 260, className = '', duration = 26, top = '22%', left = '8%' }) {
   return (
-    <div className="absolute transform-gpu" style={{ top, left, transform: 'rotateX(68deg) rotateY(-18deg)' }}>
+    <div
+      className="absolute transform-gpu"
+      style={{ top, left, transform: 'rotateX(68deg) rotateY(-18deg)' }}
+    >
       <motion.div
         className="relative"
         style={{ width: size, height: size, transformStyle: 'preserve-3d' }}

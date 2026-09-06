@@ -24,7 +24,13 @@ import {
   Network,
   Sliders,
 } from 'lucide-react';
-import { fetchProject, generateChecklist, submitFeedback, fetchFeedback, DATA_BASE_URL } from '../services/api';
+import {
+  fetchProject,
+  generateChecklist,
+  submitFeedback,
+  fetchFeedback,
+  DATA_BASE_URL,
+} from '../services/api';
 import RiskGauge from '../components/RiskGauge';
 import FlagCard from '../components/FlagCard';
 import ProjectMap from '../components/ProjectMap';
